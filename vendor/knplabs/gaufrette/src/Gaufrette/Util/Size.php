@@ -20,6 +20,20 @@ class Size
      */
     public static function fromContent($content)
     {
-        return mb_strlen($content);
+        // Make sure to get the real length in byte and not
+        // accidentally mistake some bytes as a UTF BOM.
+        return mb_strlen($content, '8bit');
+    }
+
+    /**
+     * Returns the size in bytes from the given file
+     *
+     * @param string $filename
+     *
+     * @return string
+     */
+    public static function fromFile($filename)
+    {
+        return filesize($filename);
     }
 }

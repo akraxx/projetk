@@ -1,7 +1,4 @@
 parameters:
 #    ce_user.example.class: CE\UserBundle\Example
 
-services:
-#    ce_user.example:
-#        class: %ce_user.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+

@@ -167,6 +167,19 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SOURCE FILE', file_get_contents($targetFilePath));
     }
 
+    public function testCopyForOriginUrlsAndExistingLocalFileDefaultsToNotCopy()
+    {
+        $sourceFilePath = 'http://symfony.com/images/common/logo/logo_symfony_header.png';
+        $targetFilePath = $this->workspace.DIRECTORY_SEPARATOR.'copy_target_file';
+
+        file_put_contents($targetFilePath, 'TARGET FILE');
+
+        $this->filesystem->copy($sourceFilePath, $targetFilePath, false);
+
+        $this->assertFileExists($targetFilePath);
+        $this->assertEquals(file_get_contents($sourceFilePath), file_get_contents($targetFilePath));
+    }
+
     public function testMkdirCreatesDirectoriesRecursively()
     {
         $directory = $this->workspace
@@ -336,7 +349,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
 
         mkdir($basePath);
         mkdir($basePath.'dir');
-        // create symlink to unexisting file
+        // create symlink to nonexistent file
         @symlink($basePath.'file', $basePath.'link');
 
         $this->filesystem->remove($basePath);
@@ -906,9 +919,24 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertFileExists($filename);
         $this->assertSame('bar', file_get_contents($filename));
 
-        // skip mode check on windows
+        // skip mode check on Windows
         if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
             $this->assertEquals(753, $this->getFilePermissions($filename));
+        }
+    }
+
+    public function testDumpFileWithNullMode()
+    {
+        $filename = $this->workspace.DIRECTORY_SEPARATOR.'foo'.DIRECTORY_SEPARATOR.'baz.txt';
+
+        $this->filesystem->dumpFile($filename, 'bar', null);
+
+        $this->assertFileExists($filename);
+        $this->assertSame('bar', file_get_contents($filename));
+
+        // skip mode check on Windows
+        if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->assertEquals(600, $this->getFilePermissions($filename));
         }
     }
 
@@ -962,21 +990,21 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         }
 
         if (defined('PHP_WINDOWS_VERSION_MAJOR') && false === self::$symlinkOnWindows) {
-            $this->markTestSkipped('symlink requires "Create symbolic links" privilege on windows');
+            $this->markTestSkipped('symlink requires "Create symbolic links" privilege on Windows');
         }
     }
 
     private function markAsSkippedIfChmodIsMissing()
     {
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            $this->markTestSkipped('chmod is not supported on windows');
+            $this->markTestSkipped('chmod is not supported on Windows');
         }
     }
 
     private function markAsSkippedIfPosixIsMissing()
     {
         if (defined('PHP_WINDOWS_VERSION_MAJOR') || !function_exists('posix_isatty')) {
-            $this->markTestSkipped('Posix is not supported');
+            $this->markTestSkipped('POSIX is not supported');
         }
     }
 }

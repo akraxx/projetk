@@ -235,6 +235,24 @@ class Filesystem
     }
 
     /**
+     * Returns the size of the specified file's content
+     *
+     * @param string $key
+     *
+     * @return integer File size in Bytes
+     */
+    public function size($key)
+    {
+        $this->assertHasFile($key);
+
+        if ($this->adapter instanceof Adapter\SizeCalculator) {
+            return $this->adapter->size($key);
+        }
+
+        return Util\Size::fromContent($this->read($key));
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function createStream($key)
@@ -259,12 +277,18 @@ class Filesystem
     }
 
     /**
-     * @param $key
-     * @throws Exception\FileNotFound
+     * Checks if matching file by given key exists in the filesystem
+     *
+     * Key must be non empty string, otherwise it will throw Exception\FileNotFound
+     * {@see http://php.net/manual/en/function.empty.php}
+     *
+     * @param string $key
+     *
+     * @throws Exception\FileNotFound   when sourceKey does not exist
      */
     private function assertHasFile($key)
     {
-        if (! $this->has($key)) {
+        if (! empty($key) && ! $this->has($key)) {
             throw new Exception\FileNotFound($key);
         }
     }

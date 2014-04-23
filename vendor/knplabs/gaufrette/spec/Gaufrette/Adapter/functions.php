@@ -49,7 +49,7 @@ function ftp_fget($connection, &$fileResource, $path, $mode)
 
 function ftp_chdir($connection, $dirname)
 {
-    if (in_array($dirname, array('/home/l3l0', '/home/l3l0/aaa', '/home/l3l0/relative', '/home/l3l0/relative/some', '/home/l3l1', 'C:\Ftp'))) {
+    if (in_array($dirname, array('/home/l3l0', '/home/l3l0/aaa', '/home/l3l0/relative', '/home/l3l0/relative/some', '/home/l3l1', '/home/l3l2', '/home/l3l2/a b c d -> žežulička', '/home/l3l3', 'C:\Ftp'))) {
        return true;
     }
 
@@ -76,27 +76,6 @@ function ftp_mkdir($connection, $dirname)
     return false;
 }
 
-function ftp_nlist($connection, $dirname)
-{
-    $arguments = explode(' ', $dirname);
-    switch (end($arguments)) {
-        case '/home/l3l0':
-            return array('/home/l3l0/filename');
-        case '/home/l3l0/aaa':
-            return array('/home/l3l0/aaa/filename', '/home/l3l0/aaa/otherFilename');
-        case '/home/l3l0/relative':
-            return array('filename', 'some');
-        case '/home/l3l0/relative/some':
-            return array('otherfilename');
-    }
-
-    if ('/home/l3l1' === end($arguments)) {
-        return array('/home/l3l1/filename', '/home/l3l1/.htaccess');
-    }
-
-    return false;
-}
-
 function ftp_connect($host, $password)
 {
     if ('localhost' !== $host) {
@@ -113,7 +92,7 @@ function ftp_close($connection)
 
 function ftp_rawlist($connection, $directory, $recursive = false)
 {
-    $arguments = explode(' ', $directory);
+    $arguments = explode(' ', $directory, 2);
     if ('/home/l3l0' === end($arguments))
     {
         return array(
@@ -123,35 +102,103 @@ function ftp_rawlist($connection, $directory, $recursive = false)
             "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
             "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename.exe",
             "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .htaccess",
-            "lrwxrwxrwx   1 vincent  vincent        11 Jul 12 12:16 www -> aaa"
+            "lrwxrwxrwx   1 vincent  vincent        11 Jul 12 12:16 www -> aaa",
+            "lrwxrwxrwx   1 vincent  vincent        11 Jul 12 12:16 vendor -> bbb",
         );
     }
 
     if ('/home/l3l0/aaa' === end($arguments))
     {
         return array(
-            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename"
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
         );
     }
 
-    if ('/home/l3l1' === end($arguments) && '-al' === reset($arguments))
+    if ('/home/l3l0/relative' === end($arguments))
     {
         return array(
-                "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
-                "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
-                "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
-                "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .htaccess",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 some",
         );
     }
 
-    if ('/home/l3l1' === end($arguments) && '-al' != reset($arguments))
+    if ('/home/l3l0/relative/some' === end($arguments))
     {
         return array(
-                "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
-                "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
-                "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 otherfilename",
         );
     }
+
+    if ('/home/l3l1' === end($arguments) && 0 === strpos(reset($arguments), '-al'))
+    {
+        return array(
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .htaccess",
+        );
+    }
+
+    if ('/home/l3l1' === end($arguments) && false === strpos(reset($arguments), '-al'))
+    {
+        return array(
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+        );
+    }
+
+    if ('/home/l3l2' === end($arguments))
+    {
+        return array(
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 a b c d -> žežulička",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 Žľuťoučký kůň.pdf",
+        );
+    }
+
+    if ('/home/l3l2/a b c d -> žežulička' === end($arguments))
+    {
+        return array(
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 do re mi.pdf",
+        );
+    }
+
+    if ('/home/l3l3' === end($arguments) && '-alR' === reset($arguments))
+    {
+        return array(
+            "/home/l3l3:",
+            "total: 12",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 aaa",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename.exe",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .htaccess",
+            "drwxrwxrwx   1 vincent  vincent        11 Jul 12 12:16 www",
+            "lrwxrwxrwx   1 vincent  vincent        11 Jul 12 12:16 vendor -> bbb",
+            "",
+            "/home/l3l3/aaa:",
+            "total: 8",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+            "",
+            "/home/l3l3/www:",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 filename",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 some",
+            "",
+            "/home/l3l3/www/some:",
+            "total 5",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 .",
+            "drwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 ..",
+            "-rwxr-x---  15 vincent  vincent      4096 Nov  3 21:31 otherfilename",
+        );
+    }
+
 
     // https://github.com/KnpLabs/Gaufrette/issues/147
     if ('C:\Ftp' === end($arguments))
@@ -175,37 +222,21 @@ function ftp_login($connection, $username, $password)
     return true;
 }
 
-function file_get_contents($path)
-{
-    return sprintf('%s content', $path);
-}
-
 function time()
 {
     return \strtotime('2012-10-10 23:10:10');
 }
 
-function file_put_contents($path, $content)
-{
-    return strlen($content);
-}
-
-function rename($from, $to)
-{
-    return $from.' to '.$to;
-}
-
 function file_exists($path)
 {
-    return in_array($path, array('/home/l3l0/filename', '/home/somedir/filename', 'ssh+ssl://localhost/home/l3l0/filename')) ? true : false;
+    //fake it for ssh+ssl: protocol for SFTP testing, otherwise delegate to global
+    if (strpos($path, 'ssh+ssl:') === 0) {
+        return in_array($path, array('/home/l3l0/filename', '/home/somedir/filename', 'ssh+ssl://localhost/home/l3l0/filename')) ? true : false;
+    }
+
+    return \file_exists($path);
 }
 
-function iterator_to_array($iterator)
-{
-    global $iteratorToArray;
-
-    return $iteratorToArray;
-}
 function extension_loaded($name)
 {
     global $extensionLoaded;
@@ -220,36 +251,6 @@ function extension_loaded($name)
 function opendir($url)
 {
     return true;
-}
-
-function filemtime($key)
-{
-    return 12345;
-}
-
-function unlink($key)
-{
-    return in_array($key, array('/home/l3l0/filename', '/home/somedir/filename')) ? true : false;
-}
-
-function is_dir($key)
-{
-    return (in_array($key, array('/home/l3l0', '/home/l3l0/dir', '/home/somedir', '/home/somedir/dir', '/home/l3l1'))) ? true : false;
-}
-
-function realpath($link)
-{
-    return ('symbolicLink' === $link) ? '/home/somedir' : $link;
-}
-
-function is_link($link)
-{
-    return ('symbolicLink' === $link) ? true : false;
-}
-
-function mkdir($directory, $mode, $recursive)
-{
-    return (in_array($directory, array('/home/other', '/home/somedir/aaa'))) ? true : false;
 }
 
 function apc_fetch($path)

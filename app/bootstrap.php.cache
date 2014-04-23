@@ -601,7 +601,7 @@ $_SERVER['HTTP_'.$key] = implode(', ', $value);
 }
 }
 $request = array('g'=> $_GET,'p'=> $_POST,'c'=> $_COOKIE);
-$requestOrder = ini_get('request_order') ?: ini_get('variable_order');
+$requestOrder = ini_get('request_order') ?: ini_get('variables_order');
 $requestOrder = preg_replace('#[^cgp]#','', strtolower($requestOrder)) ?:'gp';
 $_REQUEST = array();
 foreach (str_split($requestOrder) as $order) {
@@ -700,12 +700,10 @@ return array($ip);
 }
 $clientIps = array_map('trim', explode(',', $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_IP])));
 $clientIps[] = $ip;
-$trustedProxies = !self::$trustedProxies ? array($ip) : self::$trustedProxies;
 $ip = $clientIps[0];
 foreach ($clientIps as $key => $clientIp) {
-if (IpUtils::checkIp($clientIp, $trustedProxies)) {
+if (IpUtils::checkIp($clientIp, self::$trustedProxies)) {
 unset($clientIps[$key]);
-continue;
 }
 }
 return $clientIps ? array_reverse($clientIps) : array($ip);
@@ -818,7 +816,7 @@ return''=== $qs ? null : $qs;
 public function isSecure()
 {
 if (self::$trustedProxies && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
-return in_array(strtolower($proto), array('https','on','1'));
+return in_array(strtolower(current(explode(',', $proto))), array('https','on','ssl','1'));
 }
 return'on'== strtolower($this->server->get('HTTPS')) || 1 == $this->server->get('HTTPS');
 }
@@ -1258,7 +1256,7 @@ $headers->set('Content-Type', $mimeType);
 $charset = $this->charset ?:'UTF-8';
 if (!$headers->has('Content-Type')) {
 $headers->set('Content-Type','text/html; charset='.$charset);
-} elseif (0 === strpos($headers->get('Content-Type'),'text/') && false === strpos($headers->get('Content-Type'),'charset')) {
+} elseif (0 === stripos($headers->get('Content-Type'),'text/') && false === stripos($headers->get('Content-Type'),'charset')) {
 $headers->set('Content-Type', $headers->get('Content-Type').'; charset='.$charset);
 }
 if ($headers->has('Transfer-Encoding')) {
@@ -1577,10 +1575,14 @@ return null !== $this->headers->get('Vary');
 }
 public function getVary()
 {
-if (!$vary = $this->headers->get('Vary')) {
+if (!$vary = $this->headers->get('Vary', null, false)) {
 return array();
 }
-return is_array($vary) ? $vary : preg_split('/[\s,]+/', $vary);
+$ret = array();
+foreach ($vary as $item) {
+$ret = array_merge($ret, preg_split('/[\s,]+/', $item));
+}
+return $ret;
 }
 public function setVary($headers, $replace = true)
 {
@@ -1916,7 +1918,7 @@ throw new RuntimeException(sprintf('You cannot set service "%s" of inactive scop
 $this->scopedServices[$scope][$id] = $service;
 }
 $this->services[$id] = $service;
-if (method_exists($this, $method ='synchronize'.strtr($id, array('_'=>'','.'=>'_')).'Service')) {
+if (method_exists($this, $method ='synchronize'.strtr($id, array('_'=>'','.'=>'_','\\'=>'_')).'Service')) {
 $this->$method();
 }
 if (self::SCOPE_CONTAINER !== $scope && null === $service) {
@@ -1932,7 +1934,7 @@ $id = strtolower($id);
 return isset($this->services[$id])
 || array_key_exists($id, $this->services)
 || isset($this->aliases[$id])
-|| method_exists($this,'get'.strtr($id, array('_'=>'','.'=>'_')).'Service')
+|| method_exists($this,'get'.strtr($id, array('_'=>'','.'=>'_','\\'=>'_')).'Service')
 ;
 }
 public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
@@ -1953,7 +1955,7 @@ throw new ServiceCircularReferenceException($id, array_keys($this->loading));
 }
 if (isset($this->methodMap[$id])) {
 $method = $this->methodMap[$id];
-} elseif (method_exists($this, $method ='get'.strtr($id, array('_'=>'','.'=>'_')).'Service')) {
+} elseif (method_exists($this, $method ='get'.strtr($id, array('_'=>'','.'=>'_','\\'=>'_')).'Service')) {
 } else {
 if (self::EXCEPTION_ON_INVALID_REFERENCE === $invalidBehavior) {
 if (!$id) {
@@ -2083,7 +2085,7 @@ return isset($this->scopedServices[$name]);
 }
 public static function camelize($id)
 {
-return strtr(ucwords(strtr($id, array('_'=>' ','.'=>'_ '))), array(' '=>''));
+return strtr(ucwords(strtr($id, array('_'=>' ','.'=>'_ ','\\'=>'_ '))), array(' '=>''));
 }
 public static function underscore($id)
 {
@@ -2105,7 +2107,6 @@ public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = 
 namespace Symfony\Component\HttpKernel
 {
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 interface KernelInterface extends HttpKernelInterface, \Serializable
@@ -2153,7 +2154,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\ClosureLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfigurationPass;
@@ -2174,11 +2174,11 @@ protected $booted;
 protected $name;
 protected $startTime;
 protected $loadClassCache;
-const VERSION ='2.3.5';
-const VERSION_ID ='20305';
+const VERSION ='2.3.12';
+const VERSION_ID ='20312';
 const MAJOR_VERSION ='2';
 const MINOR_VERSION ='3';
-const RELEASE_VERSION ='5';
+const RELEASE_VERSION ='12';
 const EXTRA_VERSION ='';
 public function __construct($environment, $debug)
 {
@@ -2400,7 +2400,8 @@ $directChildren[$parentName] = $name;
 $topMostBundles[$name] = $bundle;
 }
 }
-if (count($diff = array_values(array_diff(array_keys($directChildren), array_keys($this->bundles))))) {
+if (!empty($directChildren) && count($diff = array_diff_key($directChildren, $this->bundles))) {
+$diff = array_keys($diff);
 throw new \LogicException(sprintf('Bundle "%s" extends bundle "%s", which is not registered.', $directChildren[$diff[0]], $diff[0]));
 }
 $this->bundleMap = array();
@@ -2519,7 +2520,7 @@ $dumper->setProxyDumper(new ProxyDumper());
 }
 $content = $dumper->dump(array('class'=> $class,'base_class'=> $baseClass));
 if (!$this->debug) {
-$content = self::stripComments($content);
+$content = static::stripComments($content);
 }
 $cache->write($content, $container->getResources());
 }
@@ -2543,21 +2544,33 @@ return $source;
 $rawChunk ='';
 $output ='';
 $tokens = token_get_all($source);
+$ignoreSpace = false;
 for (reset($tokens); false !== $token = current($tokens); next($tokens)) {
 if (is_string($token)) {
 $rawChunk .= $token;
 } elseif (T_START_HEREDOC === $token[0]) {
-$output .= preg_replace(array('/\s+$/Sm','/\n+/S'),"\n", $rawChunk).$token[1];
+$output .= $rawChunk.$token[1];
 do {
 $token = next($tokens);
 $output .= $token[1];
 } while ($token[0] !== T_END_HEREDOC);
 $rawChunk ='';
-} elseif (!in_array($token[0], array(T_COMMENT, T_DOC_COMMENT))) {
+} elseif (T_WHITESPACE === $token[0]) {
+if ($ignoreSpace) {
+$ignoreSpace = false;
+continue;
+}
+$rawChunk .= preg_replace(array('/\n{2,}/S'),"\n", $token[1]);
+} elseif (in_array($token[0], array(T_COMMENT, T_DOC_COMMENT))) {
+$ignoreSpace = true;
+} else {
 $rawChunk .= $token[1];
+if (T_OPEN_TAG === $token[0]) {
+$ignoreSpace = true;
 }
 }
-$output .= preg_replace(array('/\s+$/Sm','/\n+/S'),"\n", $rawChunk);
+}
+$output .= $rawChunk;
 return $output;
 }
 public function serialize()
@@ -2739,6 +2752,7 @@ $application->add($r->newInstance());
 namespace Symfony\Component\Config
 {
 use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 class ConfigCache
 {
@@ -2776,11 +2790,20 @@ return true;
 }
 public function write($content, array $metadata = null)
 {
-$mode = 0666 & ~umask();
+$mode = 0666;
+$umask = umask();
 $filesystem = new Filesystem();
-$filesystem->dumpFile($this->file, $content, $mode);
+$filesystem->dumpFile($this->file, $content, null);
+try {
+$filesystem->chmod($this->file, $mode, $umask);
+} catch (IOException $e) {
+}
 if (null !== $metadata && true === $this->debug) {
-$filesystem->dumpFile($this->getMetaFile(), serialize($metadata), $mode);
+$filesystem->dumpFile($this->getMetaFile(), serialize($metadata), null);
+try {
+$filesystem->chmod($this->getMetaFile(), $mode, $umask);
+} catch (IOException $e) {
+}
 }
 }
 private function getMetaFile()

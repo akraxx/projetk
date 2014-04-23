@@ -204,8 +204,14 @@ class Sftp implements Adapter,
     {
         $url = $this->sftp->getUrl($directory);
 
-        if (false === @opendir($url) && (!$create || !$this->createDirectory($directory))) {
+        $resource = @opendir($url);
+        if (false === $resource && (!$create || !$this->createDirectory($directory))) {
             throw new \RuntimeException(sprintf('The directory \'%s\' does not exist and could not be created.', $directory));
+        }
+        
+        // make sure we don't leak the resource
+        if (is_resource($resource)) {
+            closedir($resource);
         }
     }
 
@@ -218,6 +224,6 @@ class Sftp implements Adapter,
      */
     protected function createDirectory($directory)
     {
-        return mkdir($this->sftp->getUrl($directory), 0777, true);
+        return $this->sftp->mkdir($directory, 0777, true);
     }
 }

@@ -669,18 +669,18 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request->initialize(array('foo' => 'bar'));
         $this->assertEquals('', $request->getHost(), '->getHost() return empty string if not initialized');
 
-        $request->initialize(array(), array(), array(), array(), array(), array('HTTP_HOST' => 'www.exemple.com'));
-        $this->assertEquals('www.exemple.com', $request->getHost(), '->getHost() from Host Header');
+        $request->initialize(array(), array(), array(), array(), array(), array('HTTP_HOST' => 'www.example.com'));
+        $this->assertEquals('www.example.com', $request->getHost(), '->getHost() from Host Header');
 
         // Host header with port number
-        $request->initialize(array(), array(), array(), array(), array(), array('HTTP_HOST' => 'www.exemple.com:8080'));
-        $this->assertEquals('www.exemple.com', $request->getHost(), '->getHost() from Host Header with port number');
+        $request->initialize(array(), array(), array(), array(), array(), array('HTTP_HOST' => 'www.example.com:8080'));
+        $this->assertEquals('www.example.com', $request->getHost(), '->getHost() from Host Header with port number');
 
         // Server values
-        $request->initialize(array(), array(), array(), array(), array(), array('SERVER_NAME' => 'www.exemple.com'));
-        $this->assertEquals('www.exemple.com', $request->getHost(), '->getHost() from server name');
+        $request->initialize(array(), array(), array(), array(), array(), array('SERVER_NAME' => 'www.example.com'));
+        $this->assertEquals('www.example.com', $request->getHost(), '->getHost() from server name');
 
-        $request->initialize(array(), array(), array(), array(), array(), array('SERVER_NAME' => 'www.exemple.com', 'HTTP_HOST' => 'www.host.com'));
+        $request->initialize(array(), array(), array(), array(), array(), array('SERVER_NAME' => 'www.example.com', 'HTTP_HOST' => 'www.host.com'));
         $this->assertEquals('www.host.com', $request->getHost(), '->getHost() value from Host header has priority over SERVER_NAME ');
     }
 
@@ -715,7 +715,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         ));
         $port = $request->getPort();
 
-        $this->assertEquals(80, $port, 'If X_FORWARDED_PROTO is set to http return 80.');
+        $this->assertEquals(80, $port, 'If X_FORWARDED_PROTO is set to HTTP return 80.');
 
         $request = Request::create('http://example.com', 'GET', array(), array(), array(), array(
             'HTTP_X_FORWARDED_PROTO' => 'On'
@@ -739,7 +739,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testGetHostWithFakeHttpHostValue()
     {
@@ -881,14 +881,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetContentWorksTwiceInDefaultMode()
     {
-        $req = new Request;
+        $req = new Request();
         $this->assertEquals('', $req->getContent());
         $this->assertEquals('', $req->getContent());
     }
 
     public function testGetContentReturnsResource()
     {
-        $req = new Request;
+        $req = new Request();
         $retval = $req->getContent(true);
         $this->assertInternalType('resource', $retval);
         $this->assertEquals("", fread($retval, 1));
@@ -896,12 +896,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      * @dataProvider getContentCantBeCalledTwiceWithResourcesProvider
      */
     public function testGetContentCantBeCalledTwiceWithResources($first, $second)
     {
-        $req = new Request;
+        $req = new Request();
         $req->getContent($first);
         $req->getContent($second);
     }
@@ -1339,7 +1339,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testUrlencodedStringPrefix($string, $prefix, $expect)
     {
-        $request = new Request;
+        $request = new Request();
 
         $me = new \ReflectionMethod($request, 'getUrlencodedPrefix');
         $me->setAccessible(true);
@@ -1418,6 +1418,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1.1.1.1', $request->getClientIp());
         $this->assertEquals('real.example.com', $request->getHost());
         $this->assertEquals(443, $request->getPort());
+        $this->assertTrue($request->isSecure());
+
+        // check various X_FORWARDED_PROTO header values
+        $request->headers->set('X_FORWARDED_PROTO', 'ssl');
+        $this->assertTrue($request->isSecure());
+
+        $request->headers->set('X_FORWARDED_PROTO', 'https, http');
         $this->assertTrue($request->isSecure());
 
         // custom header names

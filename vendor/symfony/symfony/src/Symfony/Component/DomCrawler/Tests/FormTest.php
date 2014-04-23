@@ -224,6 +224,11 @@ class FormTest extends \PHPUnit_Framework_TestCase
                  array('foobar' => array('InputFormField', 'foobar')),
             ),
             array(
+                'turns an image input into x and y fields',
+                '<input type="image" name="bar" />',
+                array('bar.x' => array('InputFormField', '0'), 'bar.y' => array('InputFormField', '0')),
+            ),
+            array(
                 'returns textareas',
                 '<textarea name="foo">foo</textarea>
                  <input type="submit" />',
@@ -269,6 +274,16 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $dom->loadHTML('<html><form><input type="submit" /></form></html>');
 
         $form = new Form($dom->getElementsByTagName('input')->item(0), 'http://example.com');
+
+        $this->assertSame($dom->getElementsByTagName('form')->item(0), $form->getFormNode(), '->getFormNode() returns the form node associated with this form');
+    }
+
+    public function testGetFormNodeFromNamedForm()
+    {
+        $dom = new \DOMDocument();
+        $dom->loadHTML('<html><form name="my_form"><input type="submit" /></form></html>');
+
+        $form = new Form($dom->getElementsByTagName('form')->item(0), 'http://example.com');
 
         $this->assertSame($dom->getElementsByTagName('form')->item(0), $form->getFormNode(), '->getFormNode() returns the form node associated with this form');
     }
@@ -376,6 +391,12 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $form = $this->createForm('<form><input type="text" name="foo[bar]" value="foo" /><input type="text" name="bar" value="bar" /><input type="submit" /></form>');
         $this->assertEquals(array('foo' => array('bar' => 'foo'), 'bar' => 'bar'), $form->getPhpValues(), '->getPhpValues() converts keys with [] to arrays');
+
+        $form = $this->createForm('<form><input type="text" name="fo.o[ba.r]" value="foo" /><input type="text" name="ba r" value="bar" /><input type="submit" /></form>');
+        $this->assertEquals(array('fo.o' => array('ba.r' => 'foo'), 'ba r' => 'bar'), $form->getPhpValues(), '->getPhpValues() preserves periods and spaces in names');
+
+        $form = $this->createForm('<form><input type="text" name="fo.o[ba.r][]" value="foo" /><input type="text" name="fo.o[ba.r][ba.z]" value="bar" /><input type="submit" /></form>');
+        $this->assertEquals(array('fo.o' => array('ba.r' => array('foo', 'ba.z' => 'bar'))), $form->getPhpValues(), '->getPhpValues() preserves periods and spaces in names recursively');
     }
 
     public function testGetFiles()
@@ -403,6 +424,12 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $form = $this->createForm('<form method="post"><input type="file" name="foo[bar]" /><input type="text" name="bar" value="bar" /><input type="submit" /></form>');
         $this->assertEquals(array('foo' => array('bar' => array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => 4, 'size' => 0))), $form->getPhpFiles(), '->getPhpFiles() converts keys with [] to arrays');
+
+        $form = $this->createForm('<form method="post"><input type="file" name="f.o o[bar]" /><input type="text" name="bar" value="bar" /><input type="submit" /></form>');
+        $this->assertEquals(array('f.o o' => array('bar' => array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => 4, 'size' => 0))), $form->getPhpFiles(), '->getPhpFiles() preserves periods and spaces in names');
+
+        $form = $this->createForm('<form method="post"><input type="file" name="f.o o[bar][ba.z]" /><input type="file" name="f.o o[bar][]" /><input type="text" name="bar" value="bar" /><input type="submit" /></form>');
+        $this->assertEquals(array('f.o o' => array('bar' => array('ba.z' => array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => 4, 'size' => 0), array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => 4, 'size' => 0)))), $form->getPhpFiles(), '->getPhpFiles() preserves periods and spaces in names recursively');
     }
 
     /**
@@ -569,7 +596,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $form = $this->createForm('<form method="post"><input type="text" name="bar" value="bar" /><input type="submit" /></form>');
 
-        $this->assertEquals('Symfony\\Component\\DomCrawler\\Field\\InputFormField', get_class($form->get('bar')), '->get() returns the field object associated with the given name');
+        $this->assertInstanceOf('Symfony\\Component\\DomCrawler\\Field\\InputFormField', $form->get('bar'), '->get() returns the field object associated with the given name');
 
         try {
             $form->get('foo');
@@ -584,8 +611,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = $this->createForm('<form method="post"><input type="text" name="bar" value="bar" /><input type="submit" /></form>');
 
         $fields = $form->all();
-        $this->assertEquals(1, count($fields), '->all() return an array of form field objects');
-        $this->assertEquals('Symfony\\Component\\DomCrawler\\Field\\InputFormField', get_class($fields['bar']), '->all() return an array of form field objects');
+        $this->assertCount(1, $fields, '->all() return an array of form field objects');
+        $this->assertInstanceOf('Symfony\\Component\\DomCrawler\\Field\\InputFormField', $fields['bar'], '->all() return an array of form field objects');
     }
 
     public function testSubmitWithoutAFormButton()
@@ -770,7 +797,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
         return new Form($nodes->item($nodes->length - 1), $currentUri, $method);
     }
 
-    protected function createTestHtml5Form() {
+    protected function createTestHtml5Form()
+    {
         $dom = new \DOMDocument();
         $dom->loadHTML('
         <html>

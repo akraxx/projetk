@@ -22,7 +22,7 @@ use Symfony\Component\Form\Exception\BadMethodCallException;
 class Button implements \IteratorAggregate, FormInterface
 {
     /**
-     * @var FormInterface
+     * @var FormInterface|null
      */
     private $parent;
 
@@ -321,7 +321,11 @@ class Button implements \IteratorAggregate, FormInterface
      */
     public function isDisabled()
     {
-        return $this->config->getDisabled();
+        if (null === $this->parent || !$this->parent->isDisabled()) {
+            return $this->config->getDisabled();
+        }
+
+        return true;
     }
 
     /**

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/composer.json</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/AppKernel.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/config.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/routing.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/parameters.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/security.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/Acme/DemoBundle/Resources/views/layout.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Security/User/Provider/FacebookProvider.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Entity/User.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Resources/config/services.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/sonata-project/user-bundle/Entity/BaseUser.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/sonata-project/user-bundle/Model/User.php</file>
+    </open-files>
+</project-private>

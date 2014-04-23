@@ -14,7 +14,8 @@ use Gaufrette\Exception;
  * @author  Antoine Hérault <antoine.herault@gmail.com>
  */
 class Ftp implements Adapter,
-                     FileFactory
+                     FileFactory,
+                     ListKeysAware
 {
     protected $connection = null;
     protected $directory;
@@ -25,6 +26,7 @@ class Ftp implements Adapter,
     protected $passive;
     protected $create;
     protected $mode;
+    protected $ssl;
     protected $fileData = array();
 
     /**
@@ -44,6 +46,7 @@ class Ftp implements Adapter,
         $this->passive   = isset($options['passive']) ? $options['passive'] : false;
         $this->create    = isset($options['create']) ? $options['create'] : false;
         $this->mode      = isset($options['mode']) ? $options['mode'] : FTP_BINARY;
+        $this->ssl       = isset($options['ssl']) ? $options['ssl'] : false;
     }
 
     /**
@@ -116,9 +119,20 @@ class Ftp implements Adapter,
         $this->ensureDirectoryExists($this->directory, $this->create);
 
         $file  = $this->computePath($key);
-        $items = ftp_nlist($this->getConnection(), dirname($file));
+        $lines = ftp_rawlist($this->getConnection(), '-al ' . dirname($file));
 
-        return $items && (in_array($file, $items) || in_array(basename($file), $items));
+        if (false === $lines) {
+            return false;
+        }
+
+        $pattern = '{(?<!->) '.preg_quote(basename($file)).'( -> |$)}m';
+        foreach ($lines as $line) {
+            if (preg_match($pattern, $line)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -128,7 +142,38 @@ class Ftp implements Adapter,
     {
         $this->ensureDirectoryExists($this->directory, $this->create);
 
-        return $this->fetchKeys();
+        $keys = $this->fetchKeys();
+
+        return $keys['keys'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function listKeys($prefix = '')
+    {
+        $this->ensureDirectoryExists($this->directory, $this->create);
+
+        preg_match('/(.*?)[^\/]*$/', $prefix, $match);
+        $directory = rtrim($match[1], '/');
+
+        $keys = $this->fetchKeys($directory, false);
+
+        if ($directory === $prefix) {
+            return $keys;
+        }
+
+        $filteredKeys = array();
+        foreach (array('keys', 'dirs') as $hash) {
+            $filteredKeys[$hash] = array();
+            foreach ($keys[$hash] as $key) {
+                if (0 === strpos($key, $prefix)) {
+                    $filteredKeys[$hash][] = $key;
+                }
+            }
+        }
+
+        return $filteredKeys;
     }
 
     /**
@@ -307,21 +352,64 @@ class Ftp implements Adapter,
         return true;
     }
 
-    /**
-     * Fetch all Keys recursive
-     *
-     * @param string $directory
-     */
-    private function fetchKeys($directory = '')
+    private function fetchKeys($directory = '', $onlyKeys = true)
     {
-        $items = $this->listDirectory($directory);
+        $directory = preg_replace('/^[\/]*([^\/].*)$/', '/$1', $directory);
 
-        $keys = $items['dirs'];
-        foreach ($items['dirs'] as $dir) {
-            $keys = array_merge($keys, $this->fetchKeys($dir));
+        $lines = ftp_rawlist($this->getConnection(), '-alR '. $this->directory . $directory);
+
+        if (false === $lines) {
+            return array();
         }
 
-        return array_merge($items['keys'], $keys);
+        $regexDir = '/'.preg_quote($this->directory . $directory, '/').'\/?(.+):$/u';
+        $regexItem = '/^(?:([d\-\d])\S+)\s+\S+(?:(?:\s+\S+){5})?\s+(\S+)\s+(.+?)$/';
+
+        $prevLine = null;
+        $directories = array();
+        $keys = array('keys' => array(), 'dirs' => array());
+
+        foreach ((array) $lines as $line) {
+            if ('' === $prevLine && preg_match($regexDir, $line, $match)) {
+                $directory = $match[1];
+                unset($directories[$directory]);
+                if ($onlyKeys) {
+                    $keys = array(
+                        'keys' => array_merge($keys['keys'], $keys['dirs']),
+                        'dirs' => array()
+                    );
+                }
+            } elseif (preg_match($regexItem, $line, $tokens)) {
+                $name = $tokens[3];
+
+                if ('.' === $name || '..' === $name) {
+                    continue;
+                }
+
+                $path = ltrim($directory . '/' . $name, '/');
+
+                if ('d' === $tokens[1] || '<dir>' === $tokens[2]) {
+                    $keys['dirs'][] = $path;
+                    $directories[$path] = true;
+                } else {
+                    $keys['keys'][] = $path;
+                }
+            }
+            $prevLine = $line;
+        }
+
+        if ($onlyKeys) {
+            $keys = array(
+                'keys' => array_merge($keys['keys'], $keys['dirs']),
+                'dirs' => array()
+            );
+        }
+
+        foreach (array_keys($directories) as $directory) {
+            $keys = array_merge_recursive($keys, $this->fetchKeys($directory, $onlyKeys));
+        }
+
+        return $keys;
     }
 
     /**
@@ -406,7 +494,15 @@ class Ftp implements Adapter,
     private function connect()
     {
         // open ftp connection
-        $this->connection = ftp_connect($this->host, $this->port);
+        if (!$this->ssl) {
+            $this->connection = ftp_connect($this->host, $this->port);
+        } else {
+            if(function_exists('ftp_ssl_connect')) {
+                $this->connection = ftp_ssl_connect($this->host, $this->port);        
+            } else {
+                throw new \RuntimeException('This Server Has No SSL-FTP Available.');
+            }
+        }
         if (!$this->connection) {
             throw new \RuntimeException(sprintf('Could not connect to \'%s\' (port: %s).', $this->host, $this->port));
         }
@@ -450,20 +546,6 @@ class Ftp implements Adapter,
     {
         if ($this->isConnected()) {
             ftp_close($this->connection);
-        }
-    }
-
-    /**
-     * Asserts the specified file exists
-     *
-     * @param string $key
-     *
-     * @throws Exception\FileNotFound if the file does not exist
-     */
-    private function assertExists($key)
-    {
-        if (!$this->exists($key)) {
-            throw new Exception\FileNotFound($key);
         }
     }
 

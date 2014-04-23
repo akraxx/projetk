@@ -19,9 +19,10 @@ class AppKernel extends Kernel
             new PK\UserBundle\PKUserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             /* Sonata */
+            new Sonata\CoreBundle\SonataCoreBundle(),
+            new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
             new Sonata\CacheBundle\SonataCacheBundle(),
-            new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\EasyExtendsBundle\SonataEasyExtendsBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\IntlBundle\SonataIntlBundle(),
@@ -33,6 +34,7 @@ class AppKernel extends Kernel
             new Application\Sonata\MediaBundle\ApplicationSonataMediaBundle(),
             new Stfalcon\Bundle\TinymceBundle\StfalconTinymceBundle(),
             new SunCat\MobileDetectBundle\MobileDetectBundle(),
+            //new FOS\FacebookBundle\FOSFacebookBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

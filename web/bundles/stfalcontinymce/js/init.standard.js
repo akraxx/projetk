@@ -5,10 +5,13 @@
  */
 function initTinyMCE(options) {
     if (typeof tinymce == 'undefined') return false;
+    if (typeof options == 'undefined') options = stfalcon_tinymce_config;
     // Load when DOM is ready
     domready(function() {
-
-        var textareas = [];
+        var i, t = tinymce.editors, textareas = [];
+        for (i in t) {
+            if (t.hasOwnProperty(i)) t[i].remove();
+        }
         switch (options.selector.substring(0, 1)) {
             case "#":
                 var _t = document.getElementById(options.selector.substring(1));
@@ -43,7 +46,7 @@ function initTinyMCE(options) {
             }
         }
 
-        for (var i = 0; i < textareas.length; i++) {
+        for (i = 0; i < textareas.length; i++) {
             // Get editor's theme from the textarea data
             var theme = textareas[i].getAttribute("data-theme") || 'simple';
             // Get selected theme options
@@ -56,10 +59,10 @@ function initTinyMCE(options) {
                 settings.external_plugins[externalPlugins[p]['id']] = externalPlugins[p]['url'];
             }
             // workaround for an incompatibility with html5-validation
-            if (textareas[i].hasAttribute("required")) {
+            if (textareas[i].getAttribute("required") !== '') {
                 textareas[i].removeAttribute("required")
             }
-            if (!textareas[i].hasAttribute('id')) {
+            if (textareas[i].getAttribute('id') === '') {
                 textareas[i].setAttribute("id", "tinymce_" + Math.random().toString(36).substr(2));
             }
             // Add custom buttons to current editor
@@ -83,11 +86,11 @@ function initTinyMCE(options) {
                         })(buttonId, clone(options.tinymce_buttons[buttonId]));
                     }
                     //Init Event
-                    if(options.use_callback_tinymce_init){
-                        editor.on('init',function(){
+                    if (options.use_callback_tinymce_init) {
+                        editor.on('init', function() {
                             var callback = window['callback_tinymce_init'];
                             if (typeof callback == 'function') {
-                                callback();
+                                callback(editor);
                             } else {
                                 alert('You have to create callback function: callback_tinymce_init');
                             }
