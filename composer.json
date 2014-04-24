@@ -33,7 +33,8 @@
         "sonata-project/jquery-bundle": "dev-master",
         "mobiledetect/mobiledetectlib": "2.7.*",
         "suncat/mobile-detect-bundle": "dev-master",
-        "friendsofsymfony/facebook-bundle": "*"
+        "friendsofsymfony/facebook-bundle": "*",
+        "hwi/oauth-bundle": "0.4.*@dev"
     },
     "scripts": {
         "post-install-cmd": [

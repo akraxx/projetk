@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e98f53624bcf5b03c1b7034a0963b800",
+    "hash": "0708bb4c8a0171e098f7b95c95649f62",
     "packages": [
         {
             "name": "coresphere/console-bundle",
@@ -922,6 +922,119 @@
             "time": "2013-09-23 08:24:12"
         },
         {
+            "name": "hwi/oauth-bundle",
+            "version": "dev-master",
+            "target-dir": "HWI/Bundle/OAuthBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hwi/HWIOAuthBundle.git",
+                "reference": "cb90e60c079bbf3aed8044cd71d5e03e32d60133"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hwi/HWIOAuthBundle/zipball/cb90e60c079bbf3aed8044cd71d5e03e32d60133",
+                "reference": "cb90e60c079bbf3aed8044cd71d5e03e32d60133",
+                "shasum": ""
+            },
+            "require": {
+                "kriswallsmith/buzz": "~0.7",
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/options-resolver": "~2.1",
+                "symfony/security-bundle": "~2.1"
+            },
+            "require-dev": {
+                "doctrine/orm": "~2.3",
+                "symfony/twig-bundle": "~2.1",
+                "symfony/validator": "~2.1"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "to use Doctrine user provider",
+                "friendsofsymfony/user-bundle": "to connect FOSUB with this bundle",
+                "symfony/twig-bundle": "to use the Twig hwi_oauth_* functions"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "HWI\\Bundle\\OAuthBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Geoffrey Bachelet",
+                    "email": "geoffrey.bachelet@gmail.com",
+                    "homepage": "https://github.com/ubermuda"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/hwi/HWIOAuthBundle/contributors"
+                },
+                {
+                    "name": "Alexander",
+                    "email": "iam.asm89@gmail.com",
+                    "homepage": "http://asm89.github.io/"
+                },
+                {
+                    "name": "Joseph Bielawski",
+                    "email": "stloyd@gmail.com"
+                }
+            ],
+            "description": "Support for authenticating users using both OAuth1.0a and OAuth2 in Symfony2.",
+            "homepage": "http://github.com/hwi/HWIOAuthBundle",
+            "keywords": [
+                "37signals",
+                "Authentication",
+                "amazon",
+                "bitbucket",
+                "bitly",
+                "box",
+                "dailymotion",
+                "deviantart",
+                "disqus",
+                "dropbox",
+                "eventbrite",
+                "facebook",
+                "firewall",
+                "flickr",
+                "foursquare",
+                "github",
+                "google",
+                "instagram",
+                "jira",
+                "linkedin",
+                "mail.ru",
+                "oauth",
+                "oauth1",
+                "oauth2",
+                "odnoklassniki",
+                "qq",
+                "salesforce",
+                "security",
+                "sensio connect",
+                "sina weibo",
+                "stack exchange",
+                "stereomood",
+                "trello",
+                "twitch",
+                "twitter",
+                "vkontakte",
+                "windows live",
+                "wordpress",
+                "yahoo",
+                "yandex"
+            ],
+            "time": "2014-02-17 15:29:08"
+        },
+        {
             "name": "imagine/imagine",
             "version": "v0.5.0",
             "source": {
@@ -1722,16 +1835,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.9.0",
+            "version": "1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "1afc39690e7414412face1f8cbf67b73db34485c"
+                "reference": "65026b610f8c19e61d7242f600530677b0466aac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1afc39690e7414412face1f8cbf67b73db34485c",
-                "reference": "1afc39690e7414412face1f8cbf67b73db34485c",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/65026b610f8c19e61d7242f600530677b0466aac",
+                "reference": "65026b610f8c19e61d7242f600530677b0466aac",
                 "shasum": ""
             },
             "require": {
@@ -1786,7 +1899,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-04-20 16:41:26"
+            "time": "2014-04-24 13:29:03"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -2147,12 +2260,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "ff936ecf730965e67db5a268798146af44ef488e"
+                "reference": "0527005a864afc7c5e8057fd390b0ca30f576b5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/ff936ecf730965e67db5a268798146af44ef488e",
-                "reference": "ff936ecf730965e67db5a268798146af44ef488e",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/0527005a864afc7c5e8057fd390b0ca30f576b5e",
+                "reference": "0527005a864afc7c5e8057fd390b0ca30f576b5e",
                 "shasum": ""
             },
             "require": {
@@ -2218,7 +2331,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2014-04-23 14:59:42"
+            "time": "2014-04-24 17:41:00"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -2870,12 +2983,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataMediaBundle.git",
-                "reference": "7829b20fcad6b8a3b8aedf23dc00fee1dfaa89bf"
+                "reference": "f557d5c327b402d80125ce6cca15ad8f46fb36b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataMediaBundle/zipball/7829b20fcad6b8a3b8aedf23dc00fee1dfaa89bf",
-                "reference": "7829b20fcad6b8a3b8aedf23dc00fee1dfaa89bf",
+                "url": "https://api.github.com/repos/sonata-project/SonataMediaBundle/zipball/f557d5c327b402d80125ce6cca15ad8f46fb36b5",
+                "reference": "f557d5c327b402d80125ce6cca15ad8f46fb36b5",
                 "shasum": ""
             },
             "require": {
@@ -2945,7 +3058,7 @@
                 "vimeo",
                 "youtube"
             ],
-            "time": "2014-04-23 08:17:58"
+            "time": "2014-04-24 17:42:08"
         },
         {
             "name": "sonata-project/notification-bundle",
@@ -3801,7 +3914,8 @@
         "sonata-project/media-bundle": 20,
         "stfalcon/tinymce-bundle": 20,
         "sonata-project/jquery-bundle": 20,
-        "suncat/mobile-detect-bundle": 20
+        "suncat/mobile-detect-bundle": 20,
+        "hwi/oauth-bundle": 20
     },
     "platform": {
         "php": ">=5.3.3"

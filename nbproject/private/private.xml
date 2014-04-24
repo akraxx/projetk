@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <coverage xmlns="http://www.netbeans.org/ns/code-coverage/1" enabled="true"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
         <file>file:/C:/Users/Maximilien/Versioning/projetk/composer.json</file>
-        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/AppKernel.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/nbproject/project.xml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/nbproject/project.properties</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Tests/Controller/DefaultControllerTest.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Controller/DefaultController.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Resources/views/Default/index.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Resources/config/routing.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/friendsofsymfony/user-bundle/FOS/UserBundle/Tests/TestUser.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/friendsofsymfony/user-bundle/FOS/UserBundle/Tests/Security/UserProviderTest.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/friendsofsymfony/user-bundle/FOS/UserBundle/Tests/Propel/UserTest.php</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/config.yml</file>
-        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/routing.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/config_test.yml</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/parameters.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/AppKernel.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/routing_dev.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/routing.yml</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/security.yml</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/src/Acme/DemoBundle/Resources/views/layout.html.twig</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Security/User/Provider/FacebookProvider.php</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Entity/User.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/Acme/DemoBundle/Resources/views/Secured/hello.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/Acme/DemoBundle/Resources/views/Secured/helloadmin.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/app/config/parameters.yml.dist</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Security/Core/User/FOSUBUserProvider.php</file>
         <file>file:/C:/Users/Maximilien/Versioning/projetk/src/PK/UserBundle/Resources/config/services.yml</file>
-        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/sonata-project/user-bundle/Entity/BaseUser.php</file>
-        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/sonata-project/user-bundle/Model/User.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Resources/translations/HWIOAuthBundle.fr.yml</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Resources/views/Connect/registration_success.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Resources/views/Connect/login.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Resources/views/Connect/registration.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Resources/views/Connect/connect_success.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Resources/views/Connect/connect_confirm.html.twig</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/vendor/hwi/oauth-bundle/HWI/Bundle/OAuthBundle/Controller/ConnectController.php</file>
+        <file>file:/C:/Users/Maximilien/Versioning/projetk/src/Acme/DemoBundle/Controller/WelcomeController.php</file>
     </open-files>
 </project-private>

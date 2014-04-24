@@ -35,36 +35,48 @@ security:
             anonymous:          true
             
         main:
-            pattern:             .*
-            context:             user
+            pattern: ^/
             form_login:
-                provider:       fos_userbundle
-                login_path:     /login
-                use_forward:    false
-                check_path:     /login_check
-                failure_path:   null
-            logout:             true
-            anonymous:          true
+                provider: fos_userbundle
+                csrf_provider: form.csrf_provider
+                login_path: /login
+                check_path: /login_check
+            oauth:
+                resource_owners:
+                    facebook:           "/login/check-facebook"
+                login_path:        /login
+                failure_path:      /login
+ 
+                oauth_user_provider:
+                    #this is my custom user provider, created from FOSUBUserProvider - will manage the
+                    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+                    service: my_user_provider
+            logout:       true
+            anonymous:    true
+ 
+        login:
+            pattern:  ^/login$
+            security: false
+ 
+            remember_me:
+                key: "%secret%"
+                lifetime: 31536000 # 365 days in seconds
+                path: /
+                domain: ~ # Defaults to the current domain from $_SERVER
             
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        
+        secure_area:
+            pattern: ^/secure_area
 
-        login:
-            pattern:  ^/demo/secured/login$
-            security: false
 
-        secured_area:
-            pattern:    ^/demo/secured/
-            form_login:
-                check_path: _security_check
-                login_path: _demo_login
+            anonymous:    true
             logout:
-                path:   _demo_logout
-                target: _demo
-            #anonymous: ~
-            #http_basic:
-            #    realm: "Secured Demo Area"
+                path:           /secure_area/logout
+                target:         /secure_area/connect #where to go after logout
+                
 
     access_control:
         # URL of FOSUserBundle which need to be available to anonymous users
@@ -81,4 +93,7 @@ security:
         # This config requires being logged for the whole site and having the admin role for the admin part.
         # Change these rules to adapt them to your needs
         - { path: ^/admin/, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
-        - { path: ^/.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        
+        - { path: ^/secure_area/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/secure_area/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/secure_area, roles: ROLE_USER }

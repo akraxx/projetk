@@ -1,4 +1,10 @@
 parameters:
-#    ce_user.example.class: CE\UserBundle\Example
+    my_user_provider.class: PK\UserBundle\Security\Core\User\FOSUBUserProvider
+ 
+services:
+    my_user_provider:
+        class: "%my_user_provider.class%"
+        #this is the place where the properties are passed to the UserProvider - see config.yml
+        arguments: [@fos_user.user_manager,{facebook: facebookUid}]
 
 

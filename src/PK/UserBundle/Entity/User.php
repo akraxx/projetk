@@ -17,55 +17,66 @@ class User extends BaseUser {
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+    
+    /** @ORM\Column(name="facebook_id", type="integer", nullable=true) */
+    protected $facebook_id;
 
-    public function serialize()
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    protected $facebook_access_token;
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
     {
-        return serialize(array($this->facebookUid, parent::serialize()));
-    }
-
-    public function unserialize($data)
-    {
-        list($this->facebookUid, $parentData) = unserialize($data);
-        parent::unserialize($parentData);
+        return $this->id;
     }
 
     /**
-     * Get the full name of the user (first + last name)
-     * @return string
+     * Set facebook_id
+     *
+     * @param string $facebookId
+     * @return User
      */
-    public function getFullName()
+    public function setFacebookId($facebookId)
     {
-        return $this->getFirstname() . ' ' . $this->getLastname();
-    }
-    
-    public function setFacebookUid($facebookUid) {
-        $this->facebookUid = $facebookUid;
- 
-        if (!$this->username) {
-            $this->setUsername($facebookUid);
-            $this->salt = '';
-        }
- 
+        $this->facebook_id = $facebookId;
+
         return $this;
     }
+
     /**
-     * @param Array
+     * Get facebook_id
+     *
+     * @return string 
      */
-    public function setFBData($fbdata)
+    public function getFacebookId()
     {
-        if (isset($fbdata['id'])) {
-            $this->setFacebookUid($fbdata['id']);
-            $this->addRole('ROLE_FACEBOOK');
-        }
-        if (isset($fbdata['first_name'])) {
-            $this->setFirstname($fbdata['first_name']);
-        }
-        if (isset($fbdata['last_name'])) {
-            $this->setLastname($fbdata['last_name']);
-        }
-        if (isset($fbdata['email'])) {
-            $this->setEmail($fbdata['email']);
-        }
+        return $this->facebook_id;
     }
 
+    /**
+     * Set facebook_access_token
+     *
+     * @param string $facebookAccessToken
+     * @return User
+     */
+    public function setFacebookAccessToken($facebookAccessToken)
+    {
+        $this->facebook_access_token = $facebookAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Get facebook_access_token
+     *
+     * @return string 
+     */
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
+    }
 }

@@ -35,6 +35,7 @@ class AppKernel extends Kernel
             new Stfalcon\Bundle\TinymceBundle\StfalconTinymceBundle(),
             new SunCat\MobileDetectBundle\MobileDetectBundle(),
             //new FOS\FacebookBundle\FOSFacebookBundle(),
+            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

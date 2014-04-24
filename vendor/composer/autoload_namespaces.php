@@ -33,6 +33,7 @@ return array(
     'JMS\\' => array($vendorDir . '/jms/parser-lib/src'),
     'Incenteev\\ParameterHandler' => array($vendorDir . '/incenteev/composer-parameter-handler'),
     'Imagine' => array($vendorDir . '/imagine/imagine/lib'),
+    'HWI\\Bundle\\OAuthBundle\\' => array($vendorDir . '/hwi/oauth-bundle'),
     'Gaufrette' => array($vendorDir . '/knplabs/gaufrette/src'),
     'FOS\\UserBundle' => array($vendorDir . '/friendsofsymfony/user-bundle'),
     'FOS\\RestBundle' => array($vendorDir . '/friendsofsymfony/rest-bundle'),
