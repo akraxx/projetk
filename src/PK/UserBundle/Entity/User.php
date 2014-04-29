@@ -25,6 +25,11 @@ class User extends BaseUser {
     protected $facebook_access_token;
     
     /**
+    * @ORM\OneToMany(targetEntity="PK\PretBundle\Entity\Pret", mappedBy="user")
+    */
+    private $prets;
+    
+    /**
      * Get id
      *
      * @return integer 
@@ -78,5 +83,46 @@ class User extends BaseUser {
     public function getFacebookAccessToken()
     {
         return $this->facebook_access_token;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->prets = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add prets
+     *
+     * @param \PK\PretBundle\Entity\Pret $prets
+     * @return User
+     */
+    public function addPret(\PK\PretBundle\Entity\Pret $prets)
+    {
+        $this->prets[] = $prets;
+
+        return $this;
+    }
+
+    /**
+     * Remove prets
+     *
+     * @param \PK\PretBundle\Entity\Pret $prets
+     */
+    public function removePret(\PK\PretBundle\Entity\Pret $prets)
+    {
+        $this->prets->removeElement($prets);
+    }
+
+    /**
+     * Get prets
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPrets()
+    {
+        return $this->prets;
     }
 }

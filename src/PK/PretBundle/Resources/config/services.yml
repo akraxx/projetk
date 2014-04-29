@@ -1,0 +1,7 @@
+parameters:
+#    pk_pret.example.class: PK\PretBundle\Example
+
+services:
+#    pk_pret.example:
+#        class: %pk_pret.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

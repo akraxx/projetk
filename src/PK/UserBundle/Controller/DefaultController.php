@@ -10,4 +10,9 @@ class DefaultController extends Controller
     {
         return $this->render('PKUserBundle:Default:index.html.twig', array('name' => $name));
     }
+    
+    public function testAction()
+    {
+        return $this->render('PKUserBundle:Default:test.html.twig');
+    }
 }

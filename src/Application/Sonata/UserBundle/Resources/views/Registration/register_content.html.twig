@@ -1,0 +1,99 @@
+<div id="fb-root"></div>
+<script>
+    window.fbAsyncInit = function() {
+        // init the FB JS SDK
+        FB.init({
+            appId      : '620298371389074',                        // App ID from the app dashboard
+            status     : true,                                 // Check Facebook Login status
+            xfbml      : true                                  // Look for social plugins on the page
+        });
+    };
+
+    // Load the SDK asynchronously
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function fb_login() {
+        FB.getLoginStatus(function(response) {
+            if (response.status === 'connected') {
+                // connected
+                alert('Already connected, redirect to login page to create token.');
+                document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+            } else {
+                // not_authorized
+                FB.login(function(response) {
+                    if (response.authResponse) {
+                        document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                    } else {
+                        alert('Cancelled.');
+                    }
+                }, {scope: 'email'});
+            }
+        });
+    }
+</script>
+<form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="form-horizontal" role="form">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Inscription</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6" style="border-right: 2px #005fb3 solid;">
+                    <div class="text-danger">{{ form_errors(form) }}</div>
+                    <div class="form-group">
+                        <label for="{{ form.username.vars.id }}" class="col-sm-4 control-label">{{ form.username.vars.label|trans({}, 'FOSUserBundle') }}</label>
+                        <div class="col-sm-8">
+                            <input type="text" required="required" name="{{ form.username.vars.full_name }}" class="form-control" id="{{ form.username.vars.id }}" placeholder="{{ form.username.vars.label|trans({}, 'FOSUserBundle') }}">
+                        </div>
+                    </div>
+                    <div class="text-danger">{{ form_errors(form.username) }}</div>
+                    <div class="form-group">
+                        <label for="{{ form.email.vars.id }}" class="col-sm-4 control-label">{{ form.email.vars.label|trans({}, 'FOSUserBundle') }}</label>
+                        <div class="col-sm-8">
+                            <input type="email" required="required" name="{{ form.email.vars.full_name }}" class="form-control" id="{{ form.email.vars.id }}" placeholder="{{ form.email.vars.label|trans({}, 'FOSUserBundle') }}">
+                        </div>
+                    </div>
+                    <div class="text-danger">{{ form_errors(form.email) }}</div>
+                    <div class="form-group">
+                        <label for="{{ form.plainPassword.first.vars.id }}" class="col-sm-4 control-label">{{ form.plainPassword.first.vars.label|trans({}, 'FOSUserBundle') }}</label>
+                        <div class="col-sm-8">
+                            <input type="password" required="required" name="{{ form.plainPassword.first.vars.full_name }}" class="form-control" id="{{ form.plainPassword.first.vars.id }}" placeholder="{{ form.plainPassword.first.vars.label|trans({}, 'FOSUserBundle') }}">
+                        </div>
+                    </div>
+                    <div class="text-danger">{{ form_errors(form.plainPassword.first) }}</div>
+                    <div class="form-group">
+                        <label for="{{ form.plainPassword.second.vars.id }}" class="col-sm-4 control-label">{{ form.plainPassword.second.vars.label|trans({}, 'FOSUserBundle') }}</label>
+                        <div class="col-sm-8">
+                            <input type="password" required="required" name="{{ form.plainPassword.second.vars.full_name }}" class="form-control" id="{{ form.plainPassword.second.vars.id }}" placeholder="{{ form.plainPassword.second.vars.label|trans({}, 'FOSUserBundle') }}">
+                        </div>
+                    </div>
+                    <div class="text-danger">{{ form_errors(form.plainPassword.second) }}</div> 
+                    <input type="hidden" name="{{ form._token.vars.full_name }}" class="form-control" id="{{ form._token.vars.id }}" value="{{ form._token.vars.value }}">
+                </div>
+                <div class="col-lg-6">
+                    <div class="page-header">
+                        <h4>Enregistrement via Facebook</h4>
+                    </div>
+
+                    <div class="auth-social text-center">
+                        <a href="#" onclick="fb_login();" class="d-facebookButton">S'enregistrer avec Facebook</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="form-group">
+                <div class="col-sm-offset-4">
+                    <input type="submit" value="{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

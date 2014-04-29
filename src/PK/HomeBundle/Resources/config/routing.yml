@@ -1,0 +1,3 @@
+pk_home_homepage:
+    pattern:  /
+    defaults: { _controller: PKHomeBundle:Default:index }

@@ -5,6 +5,11 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
+    public function __construct($environment, $debug) {
+        date_default_timezone_set( 'Europe/Paris' );
+        parent::__construct($environment, $debug);
+    }
+    
     public function registerBundles()
     {
         $bundles = array(
@@ -36,6 +41,8 @@ class AppKernel extends Kernel
             new SunCat\MobileDetectBundle\MobileDetectBundle(),
             //new FOS\FacebookBundle\FOSFacebookBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new PK\HomeBundle\PKHomeBundle(),
+            new PK\PretBundle\PKPretBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -18,11 +18,16 @@ class User extends BaseUser {
      */
     protected $id;
     
-    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    /** @ORM\Column(name="facebook_id", type="integer", nullable=true) */
     protected $facebook_id;
 
     /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
     protected $facebook_access_token;
+    
+    /**
+    * @ORM\OneToMany(targetEntity="PK\PretBundle\Entity\Pret", mappedBy="user")
+    */
+    private $prets;
     
     /**
      * Get id
@@ -55,5 +60,28 @@ class User extends BaseUser {
     public function getFacebookId()
     {
         return $this->facebook_id;
+    }
+
+    /**
+     * Set facebook_access_token
+     *
+     * @param string $facebookAccessToken
+     * @return User
+     */
+    public function setFacebookAccessToken($facebookAccessToken)
+    {
+        $this->facebook_access_token = $facebookAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Get facebook_access_token
+     *
+     * @return string 
+     */
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
     }
 }

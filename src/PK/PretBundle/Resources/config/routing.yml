@@ -1,0 +1,31 @@
+pk_pret_creer:
+    pattern:  /creer
+    defaults: { _controller: PKPretBundle:Default:creer }
+
+pk_pret_supprimer:
+    pattern:  /supprimer/{id}
+    defaults: { _controller: PKPretBundle:Default:supprimer }
+    requirements:
+        id: \d+
+        
+pk_pret_editer:
+    pattern:  /editer/{id}
+    defaults: { _controller: PKPretBundle:Default:editer }
+    requirements:
+        id: \d+
+        
+pk_pret_rendu:
+    pattern:  /rendu/{id}
+    defaults: { _controller: PKPretBundle:Default:rendu }
+    requirements:
+        id: \d+
+    
+pk_pret_lister:
+    pattern:  /
+    defaults: { _controller: PKPretBundle:Default:lister }
+    
+pk_pret_ajouter:
+    pattern:  /ajouter
+    defaults: { _controller: PKPretBundle:Default:ajouter }
+    requirements:
+        _method:  POST

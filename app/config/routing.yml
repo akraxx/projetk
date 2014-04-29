@@ -1,3 +1,11 @@
+pk_pret:
+    resource: "@PKPretBundle/Resources/config/routing.yml"
+    prefix:   /pret
+
+pk_home:
+    resource: "@PKHomeBundle/Resources/config/routing.yml"
+    prefix:   /
+
 pk_user:
     resource: "@PKUserBundle/Resources/config/routing.yml"
     prefix:   /

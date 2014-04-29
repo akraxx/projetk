@@ -1,3 +1,7 @@
 ce_user_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: PKUserBundle:Default:index }
+    
+ce_user_testpage:
+    pattern:  /test
+    defaults: { _controller: PKUserBundle:Default:test }

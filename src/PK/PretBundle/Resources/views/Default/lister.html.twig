@@ -1,0 +1,39 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<form action="{{ path("pk_pret_creer") }}" class="page-header text-right" method="GET"><input class="btn btn-primary" type="submit" value="Créer un nouveau prêt"></form>
+<table class="table table-hover">
+    <tr>
+        <th>Objet</th>
+        <th>Emprunteur</th>
+        <th>Date emprunt</th>
+        <th>Rendu</th>
+        <th>Date de rendu</th>
+        <th>Actions</th>
+    </tr>
+    
+    {% for pret in prets %}
+    <tr class="{% if pret.rendu %}success{%else%}danger{%endif%}">
+        <td>{{ pret.objet }}</td>
+        <td>{{ pret.emprunteur }}</td>
+        <td>{{ pret.date|date('d-m-Y') }}</td>
+        <td>
+        {% if pret.rendu %}
+                Oui <a href="#"><span class="glyphicon glyphicon-remove"></span></a>
+        {%else%}
+                Non <a href="#"><span class="glyphicon glyphicon-ok"></span></a>
+        {%endif%}</td>
+        <td>{% if pret.dateRendu is not null %}{{ pret.dateRendu|date('d-m-Y') }}{%else%}-{%endif%}</td>
+        <td>
+            {% if pret.rendu %}
+                <a href="#"><span class="glyphicon glyphicon-remove"></span></a>
+            {%else%}
+                <a href="#"><span class="glyphicon glyphicon-ok"></span></a>
+            {%endif%}
+            <a href="#"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="#"><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

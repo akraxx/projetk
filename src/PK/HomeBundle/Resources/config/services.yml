@@ -1,0 +1,7 @@
+parameters:
+#    pk_home.example.class: PK\HomeBundle\Example
+
+services:
+#    pk_home.example:
+#        class: %pk_home.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

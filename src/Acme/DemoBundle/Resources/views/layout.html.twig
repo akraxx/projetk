@@ -8,9 +8,7 @@
 {% block title 'Demo Bundle' %}
 
 {% block body %}
-    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-        {{ app.user.username }}
-    {% endif %}
+    }
     {% for flashMessage in app.session.flashbag.get('notice') %}
         <div class="flash-message">
             <em>Notice</em>: {{ flashMessage }}
