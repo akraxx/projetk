@@ -25,7 +25,15 @@
         FB.getLoginStatus(function(response) {
             if (response.status === 'connected') {
                 // connected
-                alert('Already connected, redirect to login page to create token.');
+                $.confirm({
+                    text: "Vous étiez déjà connecté à Facebook, ce compte à été utilisé pour accéder au site projet-k",
+                    confirm: function(button) {
+                        document.location = "{{ path("pk_home_homepage") }}";
+                    },
+                    cancel: function(button) {
+                        document.location = "{{ path("fos_user_security_logout") }}";
+                    }
+                });
                 document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
             } else {
                 // not_authorized
@@ -39,7 +47,10 @@
             }
         });
     }
+    
+
 </script>
+<button id="confirm-login" type="button" style="display: none;"></button>
 <div class="row">
     <div class="col-lg-12">
         <form action="{{ path("fos_user_security_check") }}" method="post" class="form-horizontal" role="form">

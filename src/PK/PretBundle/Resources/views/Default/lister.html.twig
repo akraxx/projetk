@@ -19,19 +19,21 @@
         <td>{{ pret.date|date('d-m-Y') }}</td>
         <td>
         {% if pret.rendu %}
-                Oui <a href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                Oui
         {%else%}
-                Non <a href="#"><span class="glyphicon glyphicon-ok"></span></a>
+                Non
         {%endif%}</td>
         <td>{% if pret.dateRendu is not null %}{{ pret.dateRendu|date('d-m-Y') }}{%else%}-{%endif%}</td>
         <td>
+            <a href="{{ path("pk_pret_rendu", {"id":pret.id}) }}">
             {% if pret.rendu %}
-                <a href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                <span class="glyphicon glyphicon-remove"></span>
             {%else%}
-                <a href="#"><span class="glyphicon glyphicon-ok"></span></a>
+                <span class="glyphicon glyphicon-ok"></span>
             {%endif%}
-            <a href="#"><span class="glyphicon glyphicon-edit"></span></a>
-            <a href="#"><span class="glyphicon glyphicon-trash"></span></a>
+            </a>
+            <a href="{{ path("pk_pret_editer", {"id":pret.id}) }}"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="{{ path("pk_pret_supprimer", {"id":pret.id}) }}" class="confirm-delete"><span class="glyphicon glyphicon-trash"></span></a>
         </td>
     </tr>
     {% endfor %}

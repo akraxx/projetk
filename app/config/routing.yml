@@ -1,3 +1,7 @@
+pk_objet:
+    resource: "@PKObjetBundle/Resources/config/routing.yml"
+    prefix:   /
+
 pk_pret:
     resource: "@PKPretBundle/Resources/config/routing.yml"
     prefix:   /pret

@@ -29,13 +29,13 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="">PROJET-K</a>
+                    <a class="navbar-brand confirm" href="{{ path('pk_home_homepage') }}">PROJET-K</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav navbar-left">
-                        <li class="{% block home_active %}{% endblock %}"><a href="#">Accueil</a></li>
+                        <li class="{% block home_active %}{% endblock %}"><a href="{{ path('pk_home_homepage') }}">Accueil</a></li>
                         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Prêts <b class="caret"></b></a>
@@ -127,7 +127,67 @@
     {% javascripts 'js/*.js' %}
                                 <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+                                <div id="fb-root"></div>
+                                <script>
+                                    window.fbAsyncInit = function() {
+                                        // init the FB JS SDK
+                                        FB.init({
+                                            appId      : '620298371389074',                        // App ID from the app dashboard
+                                            status     : true,                                 // Check Facebook Login status
+                                            xfbml      : true                                  // Look for social plugins on the page
+                                        });
+                                    };
 
+                                    // Load the SDK asynchronously
+                                    (function(d, s, id){
+                                        var js, fjs = d.getElementsByTagName(s)[0];
+                                        if (d.getElementById(id)) {return;}
+                                        js = d.createElement(s); js.id = id;
+                                        js.src = "//connect.facebook.net/en_US/all.js";
+                                        fjs.parentNode.insertBefore(js, fjs);
+                                    }(document, 'script', 'facebook-jssdk'));
+
+                                    function fb_login() {
+                                        FB.getLoginStatus(function(response) {
+                                            if (response.status === 'connected') {
+                                                // connected
+                                                $.confirm({
+                                                    text: "Vous étiez déjà connecté à Facebook, ce compte à été utilisé pour accéder au site projet-k",
+                                                    confirm: function(button) {
+                                                        document.location = "{{ path("pk_home_homepage") }}";
+                                                    },
+                                                    cancel: function(button) {
+                                                        document.location = "{{ path("fos_user_security_logout") }}";
+                                                    },
+                                                    confirmButton: "Continuer",
+                                                    cancelButton: "Me déconnecter"
+                                                });
+                                                document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                                            } else {
+                                                // not_authorized
+                                                FB.login(function(response) {
+                                                    if (response.authResponse) {
+                                                        document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                                                    } else {
+                                                        alert('Cancelled.');
+                                                    }
+                                                }, {scope: 'email'});
+                                            }
+                                        });
+                                    }
+
+
+                                </script>
+                                <script type="text/javascript">
+                                    $(".confirm-delete").confirm({
+                                        text: "Etes vous sur de vouloir supprimer cet élément?",
+                                        title: "Confirmation requise",
+                                        confirmButton: "Oui",
+                                        cancelButton: "Non",
+                                        post: false
+                                    });
+                                    $(".confirm").confirm();
+                                </script>
                             </body>
 
 </html>

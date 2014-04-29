@@ -43,6 +43,7 @@ class AppKernel extends Kernel
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new PK\HomeBundle\PKHomeBundle(),
             new PK\PretBundle\PKPretBundle(),
+            new PK\ObjetBundle\PKObjetBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

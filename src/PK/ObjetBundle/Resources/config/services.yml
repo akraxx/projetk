@@ -1,0 +1,7 @@
+parameters:
+#    pk_objet.example.class: PK\ObjetBundle\Example
+
+services:
+#    pk_objet.example:
+#        class: %pk_objet.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
