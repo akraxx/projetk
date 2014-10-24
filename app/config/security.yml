@@ -98,4 +98,8 @@ security:
         - { path: ^/secure_area/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/secure_area, roles: ROLE_USER }
         
+        - { path: ^/pret/listepreteurs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/pret/emprunt, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pret, role: IS_AUTHENTICATED_REMEMBERED }
+        - { path: ^/objet/perso, role: IS_AUTHENTICATED_REMEMBERED }
+        

@@ -1,3 +1,54 @@
-pk_objet_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: PKObjetBundle:Default:index }
+pk_objet_lister_tout:
+    pattern:  /
+    defaults: { _controller: PKObjetBundle:Default:listertout }
+
+pk_objet_lister_tout_recherche:
+    pattern:  /recherche/{search}
+    defaults: { _controller: PKObjetBundle:Default:rechercher }
+    
+pk_objet_lister_tout_recherche_empty:
+    pattern:  /recherche/
+    defaults: { _controller: PKObjetBundle:Default:rechercherEmpty }
+    
+pk_objet_lister:
+    pattern:  /perso/
+    defaults: { _controller: PKObjetBundle:Default:lister }
+    
+pk_objet_creer:
+    pattern:  /perso/creer
+    defaults: { _controller: PKObjetBundle:Default:creer }
+    
+pk_objet_ajouter:
+    pattern:  /perso/ajouter
+    defaults: { _controller: PKObjetBundle:Default:ajouter }
+    requirements:
+        _method:  POST
+    
+pk_objet_supprimer:
+    pattern:  /perso/supprimer/{id}
+    defaults: { _controller: PKObjetBundle:Default:supprimer }
+    requirements:
+        id: \d+
+        
+pk_objet_editer:
+    pattern:  /perso/editer/{id}
+    defaults: { _controller: PKObjetBundle:Default:editer }
+    requirements:
+        id: \d+
+        
+pk_objet_pretable:
+    pattern:  /perso/pretable/{id}
+    defaults: { _controller: PKObjetBundle:Default:pretable }
+    requirements:
+        id: \d+
+        
+pk_objet_modifier:
+    pattern:  /perso/modifier/{id}
+    defaults: { _controller: PKObjetBundle:Default:modifier }
+    requirements:
+        id: \d+
+        _method:  POST
+
+pk_objet_actif:
+    pattern:  /perso/actif/{id}
+    defaults: { _controller: PKObjetBundle:Default:actif }

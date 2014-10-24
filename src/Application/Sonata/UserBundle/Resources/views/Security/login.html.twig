@@ -1,55 +1,6 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-<div id="fb-root"></div>
-<script>
-    window.fbAsyncInit = function() {
-        // init the FB JS SDK
-        FB.init({
-            appId      : '620298371389074',                        // App ID from the app dashboard
-            status     : true,                                 // Check Facebook Login status
-            xfbml      : true                                  // Look for social plugins on the page
-        });
-    };
-
-    // Load the SDK asynchronously
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-
-    function fb_login() {
-        FB.getLoginStatus(function(response) {
-            if (response.status === 'connected') {
-                // connected
-                $.confirm({
-                    text: "Vous étiez déjà connecté à Facebook, ce compte à été utilisé pour accéder au site projet-k",
-                    confirm: function(button) {
-                        document.location = "{{ path("pk_home_homepage") }}";
-                    },
-                    cancel: function(button) {
-                        document.location = "{{ path("fos_user_security_logout") }}";
-                    }
-                });
-                document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
-            } else {
-                // not_authorized
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
-                    } else {
-                        alert('Cancelled.');
-                    }
-                }, {scope: 'email'});
-            }
-        });
-    }
-    
-
-</script>
 <button id="confirm-login" type="button" style="display: none;"></button>
 <div class="row">
     <div class="col-lg-12">
@@ -59,6 +10,14 @@
                     <h3 class="panel-title">Se connecter</h3>
                 </div>
                 <div class="panel-body">
+                    <div class="row page-header">
+                        <div class="col-lg-6 text-right">
+                            <h4>Pas encore de compte?</h4> 
+                        </div>
+                        <div class="col-lg-6 text-left">
+                            <a href="{{ path('fos_user_registration_register') }}" class="btn btn-primary">M'enregistrer</a>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-lg-6" style="border-right: 2px #005fb3 solid;">
                             <div class="page-header">

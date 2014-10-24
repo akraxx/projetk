@@ -17,7 +17,13 @@ class PretType extends AbstractType
         $builder
             ->add('objet')
             ->add('emprunteur')
-            ->add('date')
+            ->add('typeEmprunteur')
+            ->add('emailEmprunteur')
+            ->add('userEmprunteur')
+            ->add('pretParent')
+            ->add('date','date',array('required' => false,
+                                        'widget' =>'single_text',
+                                        'format' =>'dd-MM-yyyy'))
         ;
     }
     

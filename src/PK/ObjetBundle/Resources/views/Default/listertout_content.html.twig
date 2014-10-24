@@ -1,0 +1,30 @@
+{%if search is not defined or search == '' %}
+    {% set search = ' ' %}
+{% endif %}
+<table class="table table-hover">
+    <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Propriétaire</th>
+        <th>Actions</th>
+    </tr>
+    {% for objet in objets %}
+    <tr>
+        <td>{{ objet.titre|replace({(search): '<b>'~search~'</b>'})|raw }}</td>
+        <td>
+            {% if objet.description is null %}
+                <em>Aucune description</em>
+            {% else %}
+                <pre>{{ objet.description|replace({(search): '<b>'~search~'</b>'})|raw }}</pre>
+            {% endif %}
+        </td>
+        <td>
+            {%if objet.proprietaire.fullname|length > 1 %}{{ objet.proprietaire.fullname }}
+            {%else%}{{ objet.proprietaire.username }}{%endif%}
+        </td>
+        <td>
+            <a href="#" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Emprunter cet objet"><span class="glyphicon glyphicon-download-alt"></span></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

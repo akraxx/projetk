@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="jumbotron">
+            <h1 class="page-header">Bonjour,</h1>
+            <p>
+                L'objet <b>{{ pret.objet.titre }}</b> vous a été prété par <b>{{ pret.user.username }}</b> depuis le <b>{{ pret.date|date('d-m-Y') }}</b>.
+            </p>
+            <div class="row">
+                <div class="col-lg-4 col-lg-offset-1">
+                    <p>
+                        Vous pouvez visualiser la liste des prets liés à votre adresse email <a href="{{ url('pk_pret_lister_emprunt_email', {'hashcode': hashcode}) }}">ici</a>
+                    </p>
+                </div>
+                <div class="col-lg-4 col-lg-offset-2">
+                    <p>
+                        <em>A venir : s'enregistrer sur le site avec votre adresse email</em>
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+    </body>
+</html>

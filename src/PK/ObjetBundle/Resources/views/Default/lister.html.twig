@@ -1,0 +1,39 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<form action="{{ path("pk_objet_creer") }}" class="page-header text-right" method="GET"><input class="btn btn-primary" type="submit" value="Créer un nouvel objet"></form>
+<table class="table table-hover">
+    <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Activer/Désactiver</th>
+        <th>Actions</th>
+    </tr>
+    
+    {% for objet in objets %}
+    <tr class="{% if objet.actif %}success{%else%}danger{%endif%}">
+        <td>{{ objet.titre }}</td>
+        <td>
+            {% if objet.description is null %}
+                <em>Aucune description</em>
+            {% else %}
+                <pre>{{ objet.description }}</pre>
+            {% endif %}
+        </td>
+        <td>
+            {% if objet.actif %}
+                <a href="{{ path("pk_objet_actif", {"id":objet.id}) }}" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Désactiver cet objet"><span class="glyphicon glyphicon-remove"></span></a>
+            {%else%}
+                <a href="{{ path("pk_objet_actif", {"id":objet.id}) }}" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Activer cet objet"><span class="glyphicon glyphicon-ok"></span></a>
+            {%endif%}
+        </td>
+        <td>
+            {% if objet.actif %}
+                <a href="{{ path("pk_pret_creer_objet", {"id":objet.id}) }}" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Prêter cet objet"><span class="glyphicon glyphicon-share"</span></a>
+            {% endif %}
+            <a href="{{ path("pk_objet_editer", {"id":objet.id}) }}" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Editer cet objet"><span class="glyphicon glyphicon-edit" ></span></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

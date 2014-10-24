@@ -1,0 +1,36 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<div class="row page-header">
+    <div class="col-lg-4">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+          <input id="search" type="text" class="form-control" placeholder="Rechercher">
+        </div>
+    </div>
+    <div class="col-lg-2 col-lg-offset-6 text-right">
+        <form action="{{ path("pk_objet_creer") }}" class="text-right" method="GET"><input class="btn btn-primary" type="submit" value="Créer un nouvel objet"></form>
+    </div>
+</div>
+<div id="table">
+     {% include "PKObjetBundle:Default:listertout_content.html.twig" with {'objets': objets} only %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+    $("#search" ).bind("change paste keyup", function() {
+        var urlPattern = "{{ path('pk_objet_lister_tout_recherche', {"search":"000000"}) }}";
+        var url = urlPattern.replace("000000", $(this).val());
+        $.ajax({
+            url: url, // le nom du fichier indiqué dans le formulaire
+            type: "GET", // la méthode indiquée dans le formulaire (get ou post)
+            cache: false,
+            success: function(data) { // je récupère la réponse du fichier PHP
+                $("#table").html(data);
+            }
+        });
+       console.log($(this).val()) ;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+<div class="text-danger">{{ form_errors(form) }}</div>
+<div class="form-group">
+    <label for="{{ form.titre.vars.id }}" class="col-sm-4 control-label">Nom de l'objet :</label>
+    <div class="col-sm-8">
+        <input value="{{ form.titre.vars.value }}" type="text" required="required" name="{{ form.titre.vars.full_name }}" class="form-control" id="{{ form.titre.vars.id }}" placeholder="Nom de l'objet">
+    </div>
+</div>
+<div class="text-danger">{{ form_errors(form.titre) }}</div>
+<div class="form-group">
+    <label for="{{ form.description.vars.id }}" class="col-sm-4 control-label">Description de l'objet :</label>
+    <div class="col-sm-8">
+        <textarea name="{{ form.description.vars.full_name }}" class="form-control" id="{{ form.description.vars.id }}" rows="5" placeholder="Description">{{ form.description.vars.value }}</textarea>
+    </div>
+</div>
+<div class="text-danger">{{ form_errors(form.description) }}</div>
+<input type="hidden" name="{{ form._token.vars.full_name }}" class="form-control" id="{{ form._token.vars.id }}" value="{{ form._token.vars.value }}">

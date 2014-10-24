@@ -30,6 +30,21 @@ class User extends BaseUser {
     private $prets;
     
     /**
+    * @ORM\OneToMany(targetEntity="PK\PretBundle\Entity\Pret", mappedBy="userEmprunteur")
+    */
+    private $emprunteurs;
+    
+    /**
+    * @ORM\OneToMany(targetEntity="PK\ObjetBundle\Entity\Objet", mappedBy="proprietaire")
+    */
+    private $objets;
+    
+    /**
+    * @ORM\OneToMany(targetEntity="PK\UserBundle\Entity\Notification", mappedBy="user")
+    */
+    private $notifications;
+    
+    /**
      * Get id
      *
      * @return integer 
@@ -90,7 +105,9 @@ class User extends BaseUser {
      */
     public function __construct()
     {
+        parent::__construct();
         $this->prets = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->objets = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -124,5 +141,106 @@ class User extends BaseUser {
     public function getPrets()
     {
         return $this->prets;
+    }
+
+
+    /**
+     * Add objets
+     *
+     * @param \PK\PretBundle\Entity\Pret $objets
+     * @return User
+     */
+    public function addObjet(\PK\PretBundle\Entity\Pret $objets)
+    {
+        $this->objets[] = $objets;
+
+        return $this;
+    }
+
+    /**
+     * Remove objets
+     *
+     * @param \PK\PretBundle\Entity\Pret $objets
+     */
+    public function removeObjet(\PK\PretBundle\Entity\Pret $objets)
+    {
+        $this->objets->removeElement($objets);
+    }
+
+    /**
+     * Get objets
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getObjets()
+    {
+        return $this->objets;
+    }
+
+    
+    /**
+     * Add emprunteurs
+     *
+     * @param \PK\PretBundle\Entity\Pret $emprunteurs
+     * @return User
+     */
+    public function addEmprunteur(\PK\PretBundle\Entity\Pret $emprunteurs)
+    {
+        $this->emprunteurs[] = $emprunteurs;
+
+        return $this;
+    }
+
+    /**
+     * Remove emprunteurs
+     *
+     * @param \PK\PretBundle\Entity\Pret $emprunteurs
+     */
+    public function removeEmprunteur(\PK\PretBundle\Entity\Pret $emprunteurs)
+    {
+        $this->emprunteurs->removeElement($emprunteurs);
+    }
+
+    /**
+     * Get emprunteurs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEmprunteurs()
+    {
+        return $this->emprunteurs;
+    }
+
+    /**
+     * Add notifications
+     *
+     * @param \PK\UserBundle\Entity\Notification $notifications
+     * @return User
+     */
+    public function addNotification(\PK\UserBundle\Entity\Notification $notifications)
+    {
+        $this->notifications[] = $notifications;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \PK\UserBundle\Entity\Notification $notifications
+     */
+    public function removeNotification(\PK\UserBundle\Entity\Notification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
     }
 }

@@ -23,28 +23,40 @@ class Pret
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="objet", type="string", length=255)
-     * @Assert\NotBlank(message = "Ce champ ne peut pas être nul")
-     * @Assert\Length(
-     *      min = "2",
-     *      max = "255",
-     *      minMessage = "Votre objet doit faire au moins {{ limit }} caractères",
-     *      maxMessage = "Votre objet ne peut pas être plus long que {{ limit }} caractères"
-     * )
-     */
+    * @ORM\ManyToOne(targetEntity="PK\ObjetBundle\Entity\Objet", inversedBy="prets")
+    * @ORM\JoinColumn(nullable=false)
+    */
     private $objet;
-
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="typeEmprunteur", type="integer")
+     */
+    private $typeEmprunteur;
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="PK\UserBundle\Entity\User", inversedBy="emprunteurs")
+    * @ORM\JoinColumn(nullable=true)
+    */
+    private $userEmprunteur;
+    
     /**
      * @var string
      *
-     * @ORM\Column(name="emprunteur", type="string", length=255)
-     * @Assert\NotBlank(message = "Ce champ ne peut pas être nul")
+     * @ORM\Column(name="emailEmprunteur", type="string", length=255, nullable=true)
+     * @Assert\Email(
+     *     message = "'{{ value }}' n'est pas un email valide."
+     * )
+     */
+    private $emailEmprunteur;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="emprunteur", type="string", length=255, nullable=true)
      * @Assert\Length(
-     *      min = "2",
      *      max = "50",
-     *      minMessage = "Le nom de l'emprunteur doit faire au moins {{ limit }} caractères",
      *      maxMessage = "Le nom de l'emprunteur ne peut pas être plus long que {{ limit }} caractères"
      * )
      */
@@ -53,7 +65,7 @@ class Pret
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(name="date", type="date")
      */
     private $date;
 
@@ -63,6 +75,13 @@ class Pret
      * @ORM\Column(name="rendu", type="boolean")
      */
     private $rendu = false;
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="confirme", type="boolean")
+     */
+    private $confirme = false;
 
     /**
      * @var \DateTime
@@ -76,7 +95,18 @@ class Pret
     * @ORM\JoinColumn(nullable=false)
     */
     private $user;
-
+    
+    /**
+    * @ORM\OneToOne(targetEntity="PK\PretBundle\Entity\Pret", inversedBy="pretEnfant")
+    * @ORM\JoinColumn(nullable=true)
+    */
+    private $pretParent;
+    
+    /**
+    * @ORM\OneToOne(targetEntity="PK\PretBundle\Entity\Pret", mappedBy="pretParent")
+    */
+    private $pretEnfant;
+    
     public function __construct() {
         $this->date = new \DateTime();
     }
@@ -226,5 +256,160 @@ class Pret
     public function getUser()
     {
         return $this->user;
+    }
+    
+    public function __toString() {
+        return $this->objet->getTitre()."";
+    }
+    
+    public function toArray() {
+        return array(
+            'id' => $this->id,
+            'date' => $this->date,
+            'dateRendu' => $this->dateRendu,
+            'rendu' => $this->rendu,
+            'emprunteur' => $this->emprunteur
+        );
+    }
+    public function toJson() {
+        return json_encode($this->toArray());
+    }
+
+    /**
+     * Set typeEmprunteur
+     *
+     * @param integer $typeEmprunteur
+     * @return Pret
+     */
+    public function setTypeEmprunteur($typeEmprunteur)
+    {
+        $this->typeEmprunteur = $typeEmprunteur;
+
+        return $this;
+    }
+
+    /**
+     * Get typeEmprunteur
+     *
+     * @return integer 
+     */
+    public function getTypeEmprunteur()
+    {
+        return $this->typeEmprunteur;
+    }
+
+    /**
+     * Set emailEmprunteur
+     *
+     * @param string $emailEmprunteur
+     * @return Pret
+     */
+    public function setEmailEmprunteur($emailEmprunteur)
+    {
+        $this->emailEmprunteur = $emailEmprunteur;
+
+        return $this;
+    }
+
+    /**
+     * Get emailEmprunteur
+     *
+     * @return string 
+     */
+    public function getEmailEmprunteur()
+    {
+        return $this->emailEmprunteur;
+    }
+
+    /**
+     * Set userEmprunteur
+     *
+     * @param \PK\UserBundle\Entity\User $userEmprunteur
+     * @return Pret
+     */
+    public function setUserEmprunteur(\PK\UserBundle\Entity\User $userEmprunteur = null)
+    {
+        $this->userEmprunteur = $userEmprunteur;
+
+        return $this;
+    }
+
+    /**
+     * Get userEmprunteur
+     *
+     * @return \PK\UserBundle\Entity\User 
+     */
+    public function getUserEmprunteur()
+    {
+        return $this->userEmprunteur;
+    }
+
+    /**
+     * Set confirme
+     *
+     * @param boolean $confirme
+     * @return Pret
+     */
+    public function setConfirme($confirme)
+    {
+        $this->confirme = $confirme;
+
+        return $this;
+    }
+
+    /**
+     * Get confirme
+     *
+     * @return boolean 
+     */
+    public function getConfirme()
+    {
+        return $this->confirme;
+    }
+
+    /**
+     * Set pretEnfant
+     *
+     * @param \PK\PretBundle\Entity\Pret $pretEnfant
+     * @return Pret
+     */
+    public function setPretEnfant(\PK\PretBundle\Entity\Pret $pretEnfant = null)
+    {
+        $this->pretEnfant = $pretEnfant;
+
+        return $this;
+    }
+
+    /**
+     * Get pretEnfant
+     *
+     * @return \PK\PretBundle\Entity\Pret 
+     */
+    public function getPretEnfant()
+    {
+        return $this->pretEnfant;
+    }
+
+    /**
+     * Set pretParent
+     *
+     * @param \PK\PretBundle\Entity\Pret $pretParent
+     * @return Pret
+     */
+    public function setPretParent(\PK\PretBundle\Entity\Pret $pretParent = null)
+    {
+        $this->pretParent = $pretParent;
+
+        return $this;
+    }
+
+    /**
+     * Get pretParent
+     *
+     * @return \PK\PretBundle\Entity\Pret 
+     */
+    public function getPretParent()
+    {
+        return $this->pretParent;
     }
 }

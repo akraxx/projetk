@@ -1,0 +1,25 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<form action="{{ path("pk_objet_modifier", {"id":id}) }}" {{ form_enctype(form) }} method="POST" class="form-horizontal" role="form">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Editer un objet</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    {% include "PKObjetBundle:Default:formulaire.html.twig" %}
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="form-group">
+                <div class="col-sm-offset-4">
+                    <input type="submit" value="Editer l'objet" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

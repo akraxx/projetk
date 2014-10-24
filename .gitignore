@@ -1,2 +1,4 @@
 /app/logs/
 /app/cache
+/app/logs
+/web/uploads

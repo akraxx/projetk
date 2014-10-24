@@ -1,33 +1,195 @@
-<div class="text-danger">{{ form_errors(form) }}</div>
-<div class="form-group">
-    <label for="{{ form.objet.vars.id }}" class="col-sm-4 control-label">Nom de l'objet prété :</label>
-    <div class="col-sm-8">
-        <input value="{{ form.objet.vars.value }}" type="text" required="required" name="{{ form.objet.vars.full_name }}" class="form-control" id="{{ form.objet.vars.id }}" placeholder="Nom de l'objet">
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<form action="{% block form_action %}{% endblock %}" {{ form_enctype(form) }} method="POST" class="form-horizontal" role="form" id="form-pret{% if pretParent is defined %}-no-verif{% endif %}">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% block form_title %}{% endblock %}</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    {% include "PKPretBundle:Default:formulaire_content.html.twig" %}
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="form-group">
+                <div class="col-sm-offset-4">
+                    <input type="submit" value="{% block form_add %}{% endblock %}" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
     </div>
+</form>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal-objets" tabindex="-1" role="dialog" aria-labelledby="modal-objets-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form action="{{ path("pk_objet_ajouter") }}" method="POST" id="form-objets" {{ form_enctype(formObjet) }} class="form-horizontal" role="form">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% include "PKObjetBundle:Default:formulaire.html.twig" with {'form': formObjet} only %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <input type="submit"  class="btn btn-primary" value="Créer l'objet"/>
+            </div>
+        </form>
+    </div>
+  </div>
 </div>
-<div class="text-danger">{{ form_errors(form.objet) }}</div>
-<div class="form-group">
-    <label for="{{ form.emprunteur.vars.id }}" class="col-sm-4 control-label">Nom de l'emprunteur</label>
-    <div class="col-sm-8">
-        <input value="{{ form.emprunteur.vars.value }}" required="required" name="{{ form.emprunteur.vars.full_name }}" class="form-control" id="{{ form.emprunteur.vars.id }}" placeholder="Nom de l'emprunteur">
+
+<!-- Modal -->
+<div class="modal fade" id="modal-confirmation-rendu" tabindex="-2" role="dialog" aria-labelledby="modal-confirmation-rendu-objets-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form action="#" method="POST" id="form-confirmation-rendu" class="form-horizontal" role="form">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Objet actuellement prété</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        L'objet <b id="c-objet-titre"></b> est actuellement prété à <b id="c-emprunteur"></b> depuis le <b id="c-date"></b>.<br><br>
+                        
+                        Vous ne pouvez préter cet objet tant qu'il n'a pas été rendu<br>
+                        
+                        <div class="form-group">
+                            <label for="date-rendu" class="col-sm-4 control-label">Définir une date de rendu :</label>
+                            <div class="col-sm-8">
+                                <input type="text" value="{{ "now"|date('d-m-Y') }}" id="date-rendu" data-id="" class="form-control datepicker">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+              <input type="submit"  class="btn btn-primary" value="Objet rendu"/>
+            </div>
+        </form>
     </div>
+  </div>
 </div>
-<div class="text-danger">{{ form_errors(form.emprunteur) }}</div>
-<div class="form-group">
-    <label for="{{ form.date.vars.id }}" class="col-sm-4 control-label">Date du pret</label>
-    <div class="col-sm-2">
-    {{ form_widget(form.date.date.day, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="col-sm-4">
-    {{ form_widget(form.date.date.month, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="col-sm-2">
-    {{ form_widget(form.date.date.year, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div style="display: none;">
-    {{ form_widget(form.date.time.hour, {'attr': {'class': 'form-control'}}) }}
-    {{ form_widget(form.date.time.minute, {'attr': {'class': 'form-control'}}) }}
-    </div>
-</div>
-<div class="text-danger">{{ form_errors(form.date) }}</div>
-<input type="hidden" name="{{ form._token.vars.full_name }}" class="form-control" id="{{ form._token.vars.id }}" value="{{ form._token.vars.value }}">
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+    $("#form-objets").submit(function(){
+        event.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'), // le nom du fichier indiqué dans le formulaire
+            type: $(this).attr('method'), // la méthode indiquée dans le formulaire (get ou post)
+            data: $(this).serialize(), // je sérialise les données (voir plus loin), ici les $_POST
+            cache: false,
+            success: function(data) { // je récupère la réponse du fichier PHP
+                if(data !== "ko") {
+                    var object = $.parseJSON(data);
+                    $("#pk_pretbundle_pret_objet").append(new Option(object.titre, object.id, true, true));
+                    $("#flashbag").fadeIn();
+                    $("#flashbag").append("Objet créé.");
+                    $('#modal-objets').modal('hide');
+                }
+            }
+        });
+    });
+    
+    $("#creer-objet-modal").click(function(){
+        event.preventDefault();
+    });
+    
+    $("#form-pret").submit(function(){
+        event.preventDefault();
+        var objectId = $("#pk_pretbundle_pret_objet option:selected").val();
+        if(objectId === undefined) {
+            objectId = $("#pk_pretbundle_pret_objet").val();
+        }
+        var urlPattern = "{{ path('pk_objet_pretable', {"id":"000000"}) }}";
+        var url = urlPattern.replace("000000", objectId);
+        var path = "{{ block('form_action') }}";
+        var dataSerialized = $(this).serialize();
+        $.ajax({
+            url: url, // le nom du fichier indiqué dans le formulaire
+            type: "GET", // la méthode indiquée dans le formulaire (get ou post)
+            cache: false,
+            success: function(data) { // je récupère la réponse du fichier PHP
+                console.log(data);
+                if(data !== "") {
+                    console.log("Objet déja prété");
+                    var object = $.parseJSON(data);
+                    $("#c-objet-titre").html(object.titre);
+                    $("#c-emprunteur").html(object.prets[0].emprunteur);
+                    $("#c-date").html(object.prets[0].date.date);
+                    $("#date-rendu").attr("data-id", object.prets[0].id);
+                    $("#modal-confirmation-rendu").modal('show');
+                }
+                else {
+                    $.post(path, dataSerialized).done(function(data) {
+                        document.location = "{{ path("pk_pret_lister") }}";
+                    });
+                }
+            }
+        });
+    });
+    
+    $("#form-confirmation-rendu").submit(function(){
+        event.preventDefault();
+        var dateRendu = $("#date-rendu").val();
+        var id = $("#date-rendu").attr("data-id");
+        var urlPattern = "{{ path("pk_pret_rendu_date", {"id": "000000", "date": "PLACEHODER_DATE"}) }}";
+        var url = urlPattern.replace("000000", id);
+        url = url.replace("PLACEHODER_DATE", dateRendu);
+        $.ajax({
+            url: url, // le nom du fichier indiqué dans le formulaire
+            type: "GET", // la méthode indiquée dans le formulaire (get ou post)
+            cache: true,
+            success: function(data) { // je récupère la réponse du fichier PHP
+                console.log(data);
+                var message;
+                if(data !== "ko") {
+                    message = "Objet rendu";
+                    $.post("{{ block('form_action') }}", $("#form-pret").serialize()).done(function(data) {
+                        document.location = "{{ path("pk_pret_lister") }}";
+                    });
+                }
+                else {
+                    message = "Impossible de rendre l'objet";
+                }
+                
+                $("#flashbag").fadeIn();
+                $("#flashbag").append(message);  
+                $("#modal-confirmation-rendu").modal('hide');
+            }
+        });
+    });
+    
+    $("#pk_pretbundle_pret_typeEmprunteur" ).change(function () {
+        for(var i = 0; i <= 3; i++) {
+            $("#type-emprunteur-"+i).hide();
+        }
+        $("#pk_pretbundle_pret_typeEmprunteur option:selected" ).each(function() {
+            var id = $(this).val();
+            $("#type-emprunteur-"+id).fadeIn();
+        });
+    });
+   /* $.ajax({
+        type: "POST",
+        url: "some.php",
+        data: { name: "John", location: "Boston" }
+    })
+    .done(function( msg ) {
+        alert( "Data Saved: " + msg );
+    }); */
+</script>
+{% endblock %}

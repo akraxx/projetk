@@ -34,7 +34,12 @@ class FOSUBUserProvider extends BaseClass
         //we connect current user
         $user->$setter_id($username);
         $user->$setter_token($response->getAccessToken());
- 
+        
+        $response = file_get_contents('http://graph.facebook.com/'.$username);
+        $array = json_decode($response, true);
+        $user->setFirstname($array["first_name"]);
+        $user->setLastname($array["last_name"]);
+        
         $this->userManager->updateUser($user);
     }
  
@@ -44,6 +49,7 @@ class FOSUBUserProvider extends BaseClass
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         $username = $response->getUsername();
+        $email = $response->getEmail();
 
         $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));
         //when the user is registrating
@@ -58,14 +64,22 @@ class FOSUBUserProvider extends BaseClass
             $user->$setter_token($response->getAccessToken());
             //I have set all requested data with the user's username
             //modify here with relevant data
-            $user->setUsername($username);
-            $user->setEmail($username);
+            
+            $response = file_get_contents('http://graph.facebook.com/'.$username);
+            $array = json_decode($response, true);
+            $user->setFirstname($array["first_name"]);
+            $user->setLastname($array["last_name"]);
+        
+            $user->setUsername($array["name"]);
+            $user->setEmail($email);
             $user->setPassword($username);
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
             return $user;
         }
- 
+        
+        
+            
         //if user exists - go with the HWIOAuth way
         $user = parent::loadUserByOAuthUserResponse($response);
  
@@ -74,7 +88,12 @@ class FOSUBUserProvider extends BaseClass
  
         //update access token
         $user->$setter($response->getAccessToken());
- 
+        
+        $response = file_get_contents('http://graph.facebook.com/'.$username);
+        $array = json_decode($response, true);
+        $user->setFirstname($array["first_name"]);
+        $user->setLastname($array["last_name"]);
+        
         return $user;
     }
  

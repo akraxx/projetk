@@ -1,6 +1,24 @@
 pk_pret_creer:
     pattern:  /creer
     defaults: { _controller: PKPretBundle:Default:creer }
+    
+pk_pret_repreter:
+    pattern:  /repreter/{id}
+    defaults: { _controller: PKPretBundle:Default:repreter }
+    requirements:
+        id: \d+
+    
+pk_pret_liste_preteurs:
+    pattern:  /listepreteurs/{id}
+    defaults: { _controller: PKPretBundle:Default:listePreteur }
+    requirements:
+        id: \d+
+    
+pk_pret_creer_objet:
+    pattern:  /creer/{id}
+    defaults: { _controller: PKPretBundle:Default:creerObjetDefini }
+    requirements:
+        id: \d+
 
 pk_pret_supprimer:
     pattern:  /supprimer/{id}
@@ -20,10 +38,40 @@ pk_pret_modifier:
     requirements:
         id: \d+
         _method:  POST
-    
+
 pk_pret_rendu:
     pattern:  /rendu/{id}
     defaults: { _controller: PKPretBundle:Default:rendu }
+    requirements:
+        id: \d+
+        
+pk_pret_confirmer:
+    pattern:  /confirmer/{id}
+    defaults: { _controller: PKPretBundle:Default:confirmer }
+    requirements:
+        id: \d+
+        
+pk_pret_rendu_date:
+    pattern:  /rendu/{id}/{date}
+    defaults: { _controller: PKPretBundle:Default:rendu }
+    requirements:
+        id: \d+
+        
+pk_pret_rendu_date_user:
+    pattern:  /rendu/{id}/{date}/{user}
+    defaults: { _controller: PKPretBundle:Default:rendu }
+    requirements:
+        id: \d+
+        
+pk_emprunt_rendu_date:
+    pattern:  /emprunt/rendu/{id}/{date}/{user}
+    defaults: { _controller: PKPretBundle:Emprunt:rendu }
+    requirements:
+        id: \d+
+        
+pk_emprunt_email_rendu_date:
+    pattern:  /emprunt/email/rendu/{hashcode}/{id}/{date}/{user}
+    defaults: { _controller: PKPretBundle:Emprunt:renduMail }
     requirements:
         id: \d+
     
@@ -36,3 +84,12 @@ pk_pret_ajouter:
     defaults: { _controller: PKPretBundle:Default:ajouter }
     requirements:
         _method:  POST
+        
+pk_pret_lister_emprunt:
+    pattern:  /emprunt
+    defaults: { _controller: PKPretBundle:Emprunt:lister }
+    
+pk_pret_lister_emprunt_email:
+    pattern:  /emprunt/email/{hashcode}
+    defaults: { _controller: PKPretBundle:Emprunt:listerParEmail }
+    

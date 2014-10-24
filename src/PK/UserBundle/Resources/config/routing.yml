@@ -2,6 +2,18 @@ ce_user_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: PKUserBundle:Default:index }
     
-ce_user_testpage:
-    pattern:  /test
-    defaults: { _controller: PKUserBundle:Default:test }
+pk_user_notifications_lister:
+    pattern:  /notification/lister
+    defaults: { _controller: PKUserBundle:Notification:lister }
+    
+pk_user_notifications_lu:
+    pattern:  /notification/lu/{id}
+    defaults: { _controller: PKUserBundle:Notification:lu }
+    requirements:
+        id: \d+
+        
+pk_user_notifications_tout_lu:
+    pattern:  /notification/lu/tout
+    defaults: { _controller: PKUserBundle:Notification:toutLu }
+    requirements:
+        id: \d+

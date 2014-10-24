@@ -322,3 +322,7 @@ border-right: 1px solid #5780E5;
 height: 31px;
 width: 16px;
 }
+
+.badge-danger {
+    background-color: red;
+}

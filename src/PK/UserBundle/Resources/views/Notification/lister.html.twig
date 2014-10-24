@@ -1,0 +1,33 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-12 page-header">
+        <span class="label label-danger">Notification non lue</span>
+    </div>
+</div>
+<table class="table table-hover">
+    <tr>
+        <th class="col-sm-7">Message</th>
+        <th class="col-sm-3">Date</th>
+        <th class="col-sm-2">
+            <a href="{{ path("pk_user_notifications_tout_lu") }}" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Marquer tout comme lu"><span class="glyphicon glyphicon-inbox"></span></a>
+            Marquer comme lu
+        </th>
+    </tr>
+    
+    {% for notification in notifications %}
+    <tr class="{% if not notification.lu %}danger{%endif%}">
+        <td>
+            <pre>{{ notification.message }}</pre>
+        </td>
+        <td>{{ notification.date|date('d-m-Y à H:i') }}</td>
+        <td>
+            {% if not notification.lu %}
+            <a href="{{ path("pk_user_notifications_lu", {"id":notification.id}) }}" class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Marquer comme lu"><span class="glyphicon glyphicon-inbox"></span></a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
